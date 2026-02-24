@@ -1,0 +1,255 @@
+
+> vite_react_shadcn_ts@0.0.0 lint
+> eslint .
+
+
+/Users/clementamato/Downloads/appmatogest-main/src/components/CommandPalette.tsx
+  78:20  error    Unexpected any. Specify a different type                                                                           @typescript-eslint/no-explicit-any
+  79:26  error    Unexpected any. Specify a different type                                                                           @typescript-eslint/no-explicit-any
+  83:6   warning  React Hook useEffect has a missing dependency: 'clients.length'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/clementamato/Downloads/appmatogest-main/src/components/calendar/EventModal.tsx
+  162:61  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/clementamato/Downloads/appmatogest-main/src/components/clients/ClientDetailSheet.tsx
+  68:56  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  70:30  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/clementamato/Downloads/appmatogest-main/src/components/clients/ClientImportModal.tsx
+  95:54  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  99:66  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/clementamato/Downloads/appmatogest-main/src/components/clients/ClientsView.tsx
+  178:25  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/clementamato/Downloads/appmatogest-main/src/components/dashboard/CabinetDashboard.tsx
+  103:50  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  103:81  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  129:53  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  130:51  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/clementamato/Downloads/appmatogest-main/src/components/layout/AppSidebar.tsx
+  36:19  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/clementamato/Downloads/appmatogest-main/src/components/production/BilanView.tsx
+  122:26  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  122:46  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  125:22  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  135:28  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  150:49  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  151:44  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  337:50  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/clementamato/Downloads/appmatogest-main/src/components/production/ClotureAnnuelleView.tsx
+  164:19   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  286:144  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  393:137  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  424:52   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  454:91   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  533:72   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/clementamato/Downloads/appmatogest-main/src/components/production/CtrlView.tsx
+  23:57  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/clementamato/Downloads/appmatogest-main/src/components/production/SupervisionForm.tsx
+  74:26  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  74:46  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  77:22  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/clementamato/Downloads/appmatogest-main/src/components/production/SupervisionView.tsx
+  52:37  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  62:38  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  74:26  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  79:26  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  86:28  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  95:26  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  95:46  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  98:22  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/clementamato/Downloads/appmatogest-main/src/components/production/TVAHub.tsx
+   45:57  error    Unexpected any. Specify a different type                                                                                               @typescript-eslint/no-explicit-any
+  147:6   warning  React Hook useMemo has missing dependencies: 'getClientTVA' and 'getDeadlineInfo'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+  162:6   warning  React Hook useMemo has a missing dependency: 'getClientTVA'. Either include it or remove the dependency array                          react-hooks/exhaustive-deps
+  171:6   warning  React Hook useMemo has a missing dependency: 'getClientTVA'. Either include it or remove the dependency array                          react-hooks/exhaustive-deps
+
+/Users/clementamato/Downloads/appmatogest-main/src/components/production/TVAView.tsx
+   32:57  error    Unexpected any. Specify a different type                                                                       @typescript-eslint/no-explicit-any
+  105:6   warning  React Hook useMemo has a missing dependency: 'getClientTVA'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  115:6   warning  React Hook useMemo has a missing dependency: 'getClientTVA'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/clementamato/Downloads/appmatogest-main/src/components/production/TimeTrackingView.tsx
+  85:44  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/clementamato/Downloads/appmatogest-main/src/components/profile/WorkScheduleSettings.tsx
+  43:6   warning  React Hook useEffect has a missing dependency: 'fetchSchedule'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  47:50  error    Unexpected any. Specify a different type                                                                          @typescript-eslint/no-explicit-any
+  75:44  error    Unexpected any. Specify a different type                                                                          @typescript-eslint/no-explicit-any
+  92:21  error    Unexpected any. Specify a different type                                                                          @typescript-eslint/no-explicit-any
+
+/Users/clementamato/Downloads/appmatogest-main/src/components/ui/badge.tsx
+  29:17  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+/Users/clementamato/Downloads/appmatogest-main/src/components/ui/button.tsx
+  47:18  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+/Users/clementamato/Downloads/appmatogest-main/src/components/ui/command.tsx
+  24:11  error  An interface declaring no members is equivalent to its supertype  @typescript-eslint/no-empty-object-type
+
+/Users/clementamato/Downloads/appmatogest-main/src/components/ui/form.tsx
+  129:10  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+/Users/clementamato/Downloads/appmatogest-main/src/components/ui/navigation-menu.tsx
+  111:3  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+/Users/clementamato/Downloads/appmatogest-main/src/components/ui/sidebar.tsx
+  636:3  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+/Users/clementamato/Downloads/appmatogest-main/src/components/ui/sonner.tsx
+  27:19  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+/Users/clementamato/Downloads/appmatogest-main/src/components/ui/textarea.tsx
+  5:18  error  An interface declaring no members is equivalent to its supertype  @typescript-eslint/no-empty-object-type
+
+/Users/clementamato/Downloads/appmatogest-main/src/components/ui/toggle.tsx
+  37:18  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+/Users/clementamato/Downloads/appmatogest-main/src/contexts/OrganizationContext.tsx
+   95:44   error    Unexpected any. Specify a different type                                                                                        @typescript-eslint/no-explicit-any
+   96:50   error    Unexpected any. Specify a different type                                                                                        @typescript-eslint/no-explicit-any
+   98:33   error    Unexpected any. Specify a different type                                                                                        @typescript-eslint/no-explicit-any
+  106:59   error    Unexpected any. Specify a different type                                                                                        @typescript-eslint/no-explicit-any
+  116:62   error    Unexpected any. Specify a different type                                                                                        @typescript-eslint/no-explicit-any
+  117:59   error    Unexpected any. Specify a different type                                                                                        @typescript-eslint/no-explicit-any
+  128:72   error    Unexpected any. Specify a different type                                                                                        @typescript-eslint/no-explicit-any
+  128:110  error    Unexpected any. Specify a different type                                                                                        @typescript-eslint/no-explicit-any
+  129:60   error    Unexpected any. Specify a different type                                                                                        @typescript-eslint/no-explicit-any
+  183:37   error    Unexpected any. Specify a different type                                                                                        @typescript-eslint/no-explicit-any
+  183:54   error    Unexpected any. Specify a different type                                                                                        @typescript-eslint/no-explicit-any
+  207:57   error    Unexpected any. Specify a different type                                                                                        @typescript-eslint/no-explicit-any
+  219:14   error    Unexpected any. Specify a different type                                                                                        @typescript-eslint/no-explicit-any
+  226:14   error    Unexpected any. Specify a different type                                                                                        @typescript-eslint/no-explicit-any
+  244:48   error    Unexpected any. Specify a different type                                                                                        @typescript-eslint/no-explicit-any
+  248:33   error    Unexpected any. Specify a different type                                                                                        @typescript-eslint/no-explicit-any
+  265:14   error    Unexpected any. Specify a different type                                                                                        @typescript-eslint/no-explicit-any
+  272:14   error    Unexpected any. Specify a different type                                                                                        @typescript-eslint/no-explicit-any
+  290:86   error    Unexpected any. Specify a different type                                                                                        @typescript-eslint/no-explicit-any
+  301:52   error    Unexpected any. Specify a different type                                                                                        @typescript-eslint/no-explicit-any
+  309:14   error    Unexpected any. Specify a different type                                                                                        @typescript-eslint/no-explicit-any
+  326:24   error    Unexpected any. Specify a different type                                                                                        @typescript-eslint/no-explicit-any
+  365:17   warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+/Users/clementamato/Downloads/appmatogest-main/src/contexts/TimerContext.tsx
+  168:44  error    Unexpected any. Specify a different type                                                                                        @typescript-eslint/no-explicit-any
+  190:21  error    Unexpected any. Specify a different type                                                                                        @typescript-eslint/no-explicit-any
+  216:17  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+/Users/clementamato/Downloads/appmatogest-main/src/hooks/useAuth.tsx
+  10:84  error    Unexpected any. Specify a different type                                                                                        @typescript-eslint/no-explicit-any
+  76:17  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+/Users/clementamato/Downloads/appmatogest-main/src/hooks/useFavorites.tsx
+  17:43  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  18:51  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  40:28  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  42:28  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/clementamato/Downloads/appmatogest-main/src/hooks/useTheme.tsx
+   33:7   error    'r' is never reassigned. Use 'const' instead                                                                                    prefer-const
+   34:7   error    'g' is never reassigned. Use 'const' instead                                                                                    prefer-const
+   35:7   error    'b' is never reassigned. Use 'const' instead                                                                                    prefer-const
+   37:21  error    'l' is never reassigned. Use 'const' instead                                                                                    prefer-const
+  117:17  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+/Users/clementamato/Downloads/appmatogest-main/src/pages/AccountSetup.tsx
+  56:23  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  82:23  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  96:23  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/clementamato/Downloads/appmatogest-main/src/pages/CabinetOverview.tsx
+   54:8   warning  React Hook useEffect has a missing dependency: 'loadStats'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  110:63  error    Unexpected any. Specify a different type                                                                      @typescript-eslint/no-explicit-any
+  113:33  error    Empty block statement                                                                                         no-empty
+
+/Users/clementamato/Downloads/appmatogest-main/src/pages/Clients.tsx
+   83:53  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  163:36  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/clementamato/Downloads/appmatogest-main/src/pages/Dashboard.tsx
+  73:45  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  80:21  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/clementamato/Downloads/appmatogest-main/src/pages/Settings.tsx
+   46:6   warning  React Hook useEffect has a missing dependency: 'fetchProfile'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  226:64  error    Unexpected any. Specify a different type                                                                         @typescript-eslint/no-explicit-any
+  413:39  error    Unexpected any. Specify a different type                                                                         @typescript-eslint/no-explicit-any
+  555:39  error    Unexpected any. Specify a different type                                                                         @typescript-eslint/no-explicit-any
+  602:39  error    Unexpected any. Specify a different type                                                                         @typescript-eslint/no-explicit-any
+
+/Users/clementamato/Downloads/appmatogest-main/src/pages/TeamManagement.tsx
+   58:53   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   59:29   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   59:49   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   74:41   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  116:70   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  119:50   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  132:23   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  145:23   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  159:18   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  162:23   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  172:23   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  347:114  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/clementamato/Downloads/appmatogest-main/src/pages/production/Bilan.tsx
+   31:21   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   49:156  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   53:21   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   68:184  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   72:21   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   90:159  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   94:21   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  112:176  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  116:21   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  134:173  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  138:21   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  156:177  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  160:21   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  165:76   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  189:12   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  195:21   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/clementamato/Downloads/appmatogest-main/src/pages/production/Cloture.tsx
+   92:98  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  129:12  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/clementamato/Downloads/appmatogest-main/src/pages/production/Ctrl.tsx
+  23:21  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  35:21  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  52:21  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  87:95  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  92:21  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/clementamato/Downloads/appmatogest-main/src/pages/production/SuiviDossiers.tsx
+  48:45  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  56:21  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/clementamato/Downloads/appmatogest-main/src/pages/production/Supervision.tsx
+   32:21  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   63:21  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   94:14  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  110:21  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/clementamato/Downloads/appmatogest-main/src/pages/production/TVA.tsx
+  25:21  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  37:21  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  54:88  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  58:21  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/clementamato/Downloads/appmatogest-main/src/pages/production/TimeTracking.tsx
+  81:6  warning  React Hook useCallback has a missing dependency: 'user.id'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/clementamato/Downloads/appmatogest-main/tailwind.config.ts
+  128:13  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+✖ 159 problems (138 errors, 21 warnings)
+  3 errors and 0 warnings potentially fixable with the `--fix` option.
+
