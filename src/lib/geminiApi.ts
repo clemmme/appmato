@@ -1,15 +1,17 @@
 /**
- * Gemini AI API Service — Expert comptable, fiscal, social, juridique
- * Uses Google Gemini 1.5 Flash (free tier: 15 RPM, 1500 RPD)
+ * MATO AI — Service API via Groq (Llama 3.3 70B)
+ * Free tier: 14,400 RPD, 30 RPM — Parfait pour 50 utilisateurs
  */
 
-const GEMINI_MODEL = 'gemini-1.5-flash';
+const GROQ_MODEL = 'llama-3.3-70b-versatile';
+const GROQ_VISION_MODEL = 'llama-3.2-90b-vision-preview';
+const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
 
-// API key from environment variable (single shared key for all users)
-const API_KEY = (import.meta.env.VITE_GEMINI_API_KEY || '').trim();
+// API key from environment variable
+const API_KEY = (import.meta.env.VITE_GROQ_API_KEY || '').trim();
 
 if (!API_KEY) {
-    console.warn("⚠️ MATO AI: VITE_GEMINI_API_KEY est manquante dans le fichier .env");
+    console.warn("⚠️ MATO AI: VITE_GROQ_API_KEY est manquante dans le fichier .env");
 }
 
 export function getGeminiApiKey(): string {
@@ -89,85 +91,87 @@ export interface ChatMessage {
     timestamp: number;
 }
 
-interface GeminiPart {
+interface GroqMessage {
+    role: 'system' | 'user' | 'assistant';
+    content: string | GroqContentPart[];
+}
+
+interface GroqContentPart {
+    type: 'text' | 'image_url';
     text?: string;
-    inline_data?: {
-        mime_type: string;
-        data: string;
-    };
+    image_url?: { url: string };
 }
 
-interface GeminiContent {
-    role: 'user' | 'model';
-    parts: GeminiPart[];
-}
+function buildMessages(messages: ChatMessage[]): { groqMessages: GroqMessage[]; hasImages: boolean } {
+    let hasImages = false;
 
-function buildContents(messages: ChatMessage[]): GeminiContent[] {
-    return messages.map(msg => {
-        const parts: GeminiPart[] = [];
-        if (msg.images) {
-            for (const dataUri of msg.images) {
-                const match = dataUri.match(/^data:([^;]+);base64,(.+)$/);
-                if (match) {
-                    parts.push({
-                        inline_data: {
-                            mime_type: match[1],
-                            data: match[2],
-                        }
-                    });
-                }
+    const groqMessages: GroqMessage[] = [
+        { role: 'system', content: SYSTEM_PROMPT }
+    ];
+
+    for (const msg of messages) {
+        const role = msg.role === 'user' ? 'user' : 'assistant';
+
+        // Check if message has images
+        const imageUris = msg.images?.filter(img => img.startsWith('data:image')) || [];
+
+        if (imageUris.length > 0 && msg.role === 'user') {
+            hasImages = true;
+            const parts: GroqContentPart[] = [];
+
+            // Add images first
+            for (const dataUri of imageUris) {
+                parts.push({
+                    type: 'image_url',
+                    image_url: { url: dataUri }
+                });
             }
+
+            // Add text
+            if (msg.text) {
+                parts.push({ type: 'text', text: msg.text });
+            }
+
+            groqMessages.push({ role, content: parts });
+        } else {
+            groqMessages.push({ role, content: msg.text });
         }
-        if (msg.text) {
-            parts.push({ text: msg.text });
-        }
-        return {
-            role: msg.role,
-            parts,
-        };
-    });
+    }
+
+    return { groqMessages, hasImages };
 }
 
 export async function sendMessage(messages: ChatMessage[]): Promise<string> {
-    const key = getGeminiApiKey();
+    const key = API_KEY;
     if (!key) {
-        console.error("[MATO AI] Clé API manquante dans .env");
-        throw new Error("Clé API manquante. Configurez VITE_GEMINI_API_KEY dans votre fichier .env.");
+        console.error("[MATO AI] Clé API Groq manquante dans .env");
+        throw new Error("Clé API manquante. Configurez VITE_GROQ_API_KEY dans votre fichier .env.");
     }
 
-    // Crucial: Use v1beta and correct naming (system_instruction is snake_case, generationConfig is camelCase)
-    const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${key}`;
-    const googleMessages = buildContents(messages);
+    const { groqMessages, hasImages } = buildMessages(messages);
+    const model = hasImages ? GROQ_VISION_MODEL : GROQ_MODEL;
 
-    console.log(`[MATO AI] Envoi requête vers ${GEMINI_MODEL} (v1beta)...`);
+    console.log(`[MATO AI] Envoi requête vers Groq (${model})...`);
 
     try {
-        const response = await fetch(API_URL, {
+        const response = await fetch(GROQ_API_URL, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${key}`,
+            },
             body: JSON.stringify({
-                system_instruction: {
-                    parts: [{ text: SYSTEM_PROMPT }]
-                },
-                contents: googleMessages,
-                generationConfig: {
-                    temperature: 0.7,
-                    topP: 0.95,
-                    topK: 40,
-                    maxOutputTokens: 4096,
-                },
-                safetySettings: [
-                    { category: 'HARM_CATEGORY_HARASSMENT', threshold: 'BLOCK_NONE' },
-                    { category: 'HARM_CATEGORY_HATE_SPEECH', threshold: 'BLOCK_NONE' },
-                    { category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'BLOCK_NONE' },
-                    { category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'BLOCK_NONE' },
-                ]
+                model,
+                messages: groqMessages,
+                temperature: 0.7,
+                max_tokens: 4096,
+                top_p: 0.95,
             })
         });
 
         if (response.status === 429) {
             console.error("[MATO AI] 429: Limite de requêtes atteinte");
-            throw new Error('⏰ Limite de requêtes atteinte (15/min). Réessayez dans une minute.');
+            throw new Error('⏰ Limite de requêtes atteinte (30/min). Réessayez dans une minute.');
         }
 
         if (!response.ok) {
@@ -177,13 +181,14 @@ export async function sendMessage(messages: ChatMessage[]): Promise<string> {
         }
 
         const data = await response.json();
-        const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+        const text = data.choices?.[0]?.message?.content;
 
         if (!text) {
             console.error("[MATO AI] Réponse vide ou structure inconnue", data);
             throw new Error('Réponse vide de l\'IA.');
         }
 
+        console.log(`[MATO AI] Réponse reçue en ${data.usage?.total_time ? (data.usage.total_time * 1000).toFixed(0) + 'ms' : '?'}`);
         return text;
     } catch (error) {
         console.error("[MATO AI] Fetch Error:", error);
