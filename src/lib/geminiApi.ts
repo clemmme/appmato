@@ -1,11 +1,35 @@
 /**
- * MATO AI — Service API via Groq (Llama 3.3 70B)
- * Free tier: 14,400 RPD, 30 RPM — Parfait pour 50 utilisateurs
+ * MATO AI — Service API via Groq
+ * - Texte/Calculs   : llama-3.3-70b-versatile (14 400 RPD free)
+ * - Web temps réel  : compound-beta (recherche web Tavily automatique)
+ * - Vision (images) : llama-3.2-90b-vision-preview
  */
 
-const GROQ_MODEL = 'llama-3.3-70b-versatile';
-const GROQ_VISION_MODEL = 'llama-3.2-90b-vision-preview';
+const GROQ_MODEL = 'llama-3.3-70b-versatile';  // Rapide, connaissance générale
+const GROQ_WEB_MODEL = 'compound-beta';             // Recherche web temps réel
+const GROQ_VISION_MODEL = 'llama-3.2-90b-vision-preview'; // Vision images/PDF
 const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
+
+// Mots-clés qui indiquent qu'une question nécessite des infos récentes du web
+const WEB_SEARCH_KEYWORDS = [
+    '2025', '2026', '2027',
+    'actuel', 'actuellement', 'aujourd', 'récent', 'récente', 'dernièr',
+    'nouveau', 'nouvelle', 'nouveaux', 'en vigueur', 'en cours',
+    'mise à jour', 'changement', 'modification', 'réforme',
+    'projet de loi', 'loi de finances', 'plfss', 'plf',
+    'journal officiel', 'jo du', 'décret', 'arrêté',
+    'actualité', 'news', 'annonce',
+];
+
+/**
+ * Détecte si la question nécessite une recherche web (infos récentes)
+ */
+function needsWebSearch(messages: ChatMessage[]): boolean {
+    const lastUserMessage = [...messages].reverse().find(m => m.role === 'user');
+    if (!lastUserMessage) return false;
+    const text = lastUserMessage.text.toLowerCase();
+    return WEB_SEARCH_KEYWORDS.some(kw => text.includes(kw));
+}
 
 // API key from environment variable
 const API_KEY = (import.meta.env.VITE_GROQ_API_KEY || '').trim();
@@ -149,9 +173,19 @@ export async function sendMessage(messages: ChatMessage[]): Promise<string> {
     }
 
     const { groqMessages, hasImages } = buildMessages(messages);
-    const model = hasImages ? GROQ_VISION_MODEL : GROQ_MODEL;
+    // Priorité : vision > web search > modèle rapide standard
+    let model: string;
+    if (hasImages) {
+        model = GROQ_VISION_MODEL;
+    } else if (needsWebSearch(messages)) {
+        model = GROQ_WEB_MODEL;
+        console.log(`[MATO AI] 🌐 Recherche web activée (compound-beta)`);
+    } else {
+        model = GROQ_MODEL;
+    }
 
     console.log(`[MATO AI] Envoi requête vers Groq (${model})...`);
+
 
     try {
         const response = await fetch(GROQ_API_URL, {
