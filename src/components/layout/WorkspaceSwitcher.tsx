@@ -30,7 +30,9 @@ export function WorkspaceSwitcher() {
             {/* Animated Background Pill */}
             <motion.div
                 className="absolute top-1 bottom-1 w-[calc(50%-4px)] bg-background rounded-xl shadow-sm border border-border/50"
-                initial={false}
+                initial={{
+                    x: activeWorkspace === 'gestion' ? '4px' : 'calc(100% + 4px)'
+                }}
                 animate={{
                     x: activeWorkspace === 'gestion' ? '4px' : 'calc(100% + 4px)'
                 }}

@@ -18,7 +18,7 @@ export const pulseService = {
 
         if (!profile?.current_organization_id) return [];
 
-        const { data, error } = await supabase
+        const { data, error } = await (supabase
             .from('pulse_posts')
             .select(`
         *,
@@ -27,7 +27,7 @@ export const pulseService = {
         comments:pulse_comments(id)
       `)
             .eq('organization_id', profile.current_organization_id)
-            .order('created_at', { ascending: false });
+            .order('created_at', { ascending: false }) as any);
 
         if (error) throw error;
 
@@ -43,7 +43,10 @@ export const pulseService = {
     /**
      * Créer un nouveau post
      */
-    async createPost(content: string, mediaUrl?: string) {
+    /**
+     * Créer un nouveau post
+     */
+    async createPost(content: string, mediaUrl?: string, mentions: string[] = []) {
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) throw new Error("Non authentifié");
 
@@ -61,7 +64,8 @@ export const pulseService = {
                 author_id: user.id,
                 organization_id: profile.current_organization_id,
                 content,
-                media_url: mediaUrl
+                media_url: mediaUrl,
+                mentions
             })
             .select(`
         *,
@@ -81,7 +85,7 @@ export const pulseService = {
     /**
      * Mettre à jour un post
      */
-    async updatePost(postId: string, content: string, mediaUrl?: string) {
+    async updatePost(postId: string, content: string, mediaUrl?: string, mentions: string[] = []) {
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) throw new Error("Non authentifié");
 
@@ -94,6 +98,7 @@ export const pulseService = {
             .update({
                 content,
                 media_url: mediaUrl,
+                mentions,
                 updated_at: new Date().toISOString()
             })
             .eq('id', postId)
@@ -182,7 +187,7 @@ export const pulseService = {
     /**
      * Ajouter un commentaire
      */
-    async addComment(postId: string, content: string) {
+    async addComment(postId: string, content: string, parentId?: string, mentions: string[] = []) {
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) throw new Error("Non authentifié");
 
@@ -200,7 +205,9 @@ export const pulseService = {
                 post_id: postId,
                 author_id: user.id,
                 organization_id: profile.current_organization_id,
-                content
+                content,
+                parent_id: parentId,
+                mentions
             })
             .select(`
         *,

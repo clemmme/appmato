@@ -87,9 +87,16 @@ export function ChatWindow({ channel, onBack }: ChatWindowProps) {
             channel.id,
             (newMsg) => {
                 setMessages(prev => {
-                    // Eviter les ids en double si on a l'ui optimiste (bien qu'on n'en ait pas ici, c'est plus safe)
+                    // Eviter les ids en double
                     if (prev.find(m => m.id === newMsg.id)) return prev;
-                    return [...prev, newMsg];
+
+                    // Inject profile if missing (realtime optimization)
+                    const msgWithProfile = {
+                        ...newMsg,
+                        profile: newMsg.profile || getProfile(newMsg.sender_id)
+                    };
+
+                    return [...prev, msgWithProfile];
                 });
                 chatService.markAsRead(channel.id);
                 setTimeout(scrollToBottom, 100);

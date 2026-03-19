@@ -291,19 +291,10 @@ export const chatService = {
             schema: 'public',
             table: 'chat_messages',
             filter: `channel_id=eq.${channelId}`
-        }, async (payload) => {
-            // Fetch profile info for the new message
-            const { data: profile } = await supabase
-                .from('profiles')
-                .select('id, full_name, email, avatar_url')
-                .eq('id', payload.new.sender_id)
-                .single();
-
-            const completeMessage = {
-                ...payload.new,
-                profile
-            };
-            onNewMessage(completeMessage);
+        }, (payload) => {
+            // Call onNewMessage immediately with raw payload
+            // Profile resolution should happen in the UI to avoid latency
+            onNewMessage(payload.new);
         });
 
         if (onTyping) {

@@ -211,6 +211,7 @@ export interface PulsePost {
   organization_id: string;
   content: string;
   media_url?: string | null;
+  mentions: string[]; // UUID array
   created_at: string;
   updated_at: string;
   // Included via Join
@@ -226,6 +227,8 @@ export interface PulseComment {
   author_id: string;
   organization_id: string;
   content: string;
+  parent_id: string | null;
+  mentions: string[]; // UUID array
   created_at: string;
   // Included via Join
   author?: Profile;
