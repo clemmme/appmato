@@ -180,7 +180,7 @@ export default function TeamManagement() {
     const handleInviteEmail = () => {
         if (!currentOrg) return;
         const subject = encodeURIComponent(`Invitation à rejoindre le cabinet ${currentOrg.name} sur APPMATO`);
-        const body = encodeURIComponent(`Bonjour,\n\nJe vous invite à rejoindre notre espace de travail sur APPMATO.\n\nVoici notre code d'invitation : ${currentOrg.invite_code.toUpperCase()}\n\nVous pouvez l'utiliser lors de votre inscription ou sur votre profil pour rejoindre le cabinet.\n\nCordialement,\n${currentOrg.name}`);
+        const body = encodeURIComponent(`Bonjour,\n\nJe vous invite à rejoindre notre espace de travail sur APPMATO : https://appmato.vercel.app\n\nVoici notre code d'invitation : ${currentOrg.invite_code.toUpperCase()}\n\nVous pouvez l'utiliser lors de votre inscription ou sur votre profil pour rejoindre le cabinet.\n\nCordialement,\n${currentOrg.name}`);
         window.location.href = `mailto:?subject=${subject}&body=${body}`;
     };
 
