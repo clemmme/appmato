@@ -38,7 +38,7 @@ export default function Auth() {
   const { toast } = useToast();
 
   useEffect(() => {
-    if (user) navigate('/');
+    if (user) navigate('/discussions');
   }, [user, navigate]);
 
   // Handle overscroll background color

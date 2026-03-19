@@ -14,7 +14,7 @@ export function WorkspaceProvider({ children }: { children: React.ReactNode }) {
     // Optionnel: Sauvegarder dans le localStorage pour mémoriser le dernier espace visité
     const [activeWorkspace, setActiveWorkspace] = useState<WorkspaceType>(() => {
         const saved = localStorage.getItem('appmato_active_workspace');
-        return (saved as WorkspaceType) || 'gestion';
+        return (saved as WorkspaceType) || 'pulse';
     });
 
     useEffect(() => {

@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
     Users, Shield, UserCheck, UserMinus, Crown, Copy, Search,
-    ArrowRight, RefreshCw, UserPlus
+    ArrowRight, RefreshCw, UserPlus, Mail
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -177,6 +177,13 @@ export default function TeamManagement() {
         toast({ title: 'Copié !', description: 'Code d\'invitation copié.' });
     };
 
+    const handleInviteEmail = () => {
+        if (!currentOrg) return;
+        const subject = encodeURIComponent(`Invitation à rejoindre le cabinet ${currentOrg.name} sur APPMATO`);
+        const body = encodeURIComponent(`Bonjour,\n\nJe vous invite à rejoindre notre espace de travail sur APPMATO.\n\nVoici notre code d'invitation : ${currentOrg.invite_code.toUpperCase()}\n\nVous pouvez l'utiliser lors de votre inscription ou sur votre profil pour rejoindre le cabinet.\n\nCordialement,\n${currentOrg.name}`);
+        window.location.href = `mailto:?subject=${subject}&body=${body}`;
+    };
+
     if (userRole !== 'manager') {
         return (
             <MainLayout>
@@ -251,6 +258,9 @@ export default function TeamManagement() {
                             </div>
                             <Button variant="outline" size="sm" onClick={copyInviteCode} className="rounded-xl gap-2">
                                 <Copy className="w-4 h-4" /> Copier
+                            </Button>
+                            <Button variant="default" size="sm" onClick={handleInviteEmail} className="rounded-xl gap-2 bg-primary">
+                                <Mail className="w-4 h-4" /> Inviter par Email
                             </Button>
                         </div>
                     </div>

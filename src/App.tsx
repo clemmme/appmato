@@ -86,8 +86,8 @@ function AppRoutes() {
     <>
       {user && <CommandPalette />}
       <Routes>
-        <Route path="/" element={user ? <Navigate to="/dashboard" replace /> : <Landing />} />
-        <Route path="/auth" element={user ? <Navigate to="/dashboard" replace /> : <Auth />} />
+        <Route path="/" element={user ? <Navigate to="/discussions" replace /> : <Landing />} />
+        <Route path="/auth" element={user ? <Navigate to="/discussions" replace /> : <Auth />} />
         <Route path="/setup" element={user ? <AccountSetup /> : <Navigate to="/auth" replace />} />
         <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
         <Route path="/production/suivi-dossiers" element={<ProtectedRoute><SuiviDossiers /></ProtectedRoute>} />
