@@ -281,6 +281,22 @@ export const chatService = {
     },
 
     /**
+     * Supprimer totalement un canal (nécessite d'être membre/propriétaire)
+     */
+    async deleteChannel(channelId: string) {
+        const { data: auth } = await supabase.auth.getSession();
+        if (!auth.session) throw new Error("Non authentifié");
+
+        // RLS will handle permission (member or owner)
+        const { error } = await supabase
+            .from('chat_channels')
+            .delete()
+            .eq('id', channelId);
+
+        if (error) throw error;
+    },
+
+    /**
      * Écoute des nouveaux messages et des événements de frappe via Supabase Realtime
      */
     subscribeToMessages(channelId: string, onNewMessage: (msg: any) => void, onTyping?: (userId: string) => void) {
@@ -305,7 +321,14 @@ export const chatService = {
             });
         }
 
-        return channel.subscribe();
+        const sub = channel.subscribe((status) => {
+            console.log(`Realtime Message Subscription [${channelId}]:`, status);
+            if (status === 'CHANNEL_ERROR') {
+                console.error("Erreur de connexion Realtime (WebSockets bloqués ?)");
+            }
+        });
+
+        return sub;
     },
 
     /**

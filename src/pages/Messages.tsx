@@ -53,14 +53,24 @@ export function Messages() {
         e.stopPropagation();
         if (window.confirm('Voulez-vous vraiment supprimer cette conversation ?')) {
             try {
-                await chatService.leaveChannel(channelId);
+                await chatService.deleteChannel(channelId);
                 if (selectedChannel?.id === channelId) {
                     setSelectedChannel(null);
                 }
                 await loadChannels();
                 toast({ title: "Conversation supprimée" });
             } catch (err: any) {
-                toast({ title: "Erreur", description: err.message, variant: "destructive" });
+                // If direct delete fails (maybe RLS), try leaving as fallback if it's a member issue
+                try {
+                    await chatService.leaveChannel(channelId);
+                    if (selectedChannel?.id === channelId) {
+                        setSelectedChannel(null);
+                    }
+                    await loadChannels();
+                    toast({ title: "Vous avez quitté la conversation" });
+                } catch (innerErr: any) {
+                    toast({ title: "Erreur", description: innerErr.message, variant: "destructive" });
+                }
             }
         }
     };

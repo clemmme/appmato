@@ -25,6 +25,7 @@ export function ChatWindow({ channel, onBack }: ChatWindowProps) {
     const [loading, setLoading] = useState(true);
     const [inputValue, setInputValue] = useState('');
     const [sending, setSending] = useState(false);
+    const [realtimeStatus, setRealtimeStatus] = useState<'SUBSCRIBED' | 'TIMED_OUT' | 'CHANNEL_ERROR' | 'CONNECTING'>('CONNECTING');
     const { toast } = useToast();
 
     // Renaming
@@ -123,7 +124,13 @@ export function ChatWindow({ channel, onBack }: ChatWindowProps) {
                     delete typingTimeouts.current[userId];
                 }, 3000);
             }
-        );
+        ).subscribe((status) => {
+            setRealtimeStatus(status as any);
+            if (status === 'CHANNEL_ERROR') {
+                console.error("Erreur Realtime: WebSockets bloqués ou Proxy Vercel incompatible.");
+            }
+        });
+
 
         return () => {
             supabase.removeChannel(subscription);
@@ -383,6 +390,15 @@ export function ChatWindow({ channel, onBack }: ChatWindowProps) {
                         {channel.type === 'group' ? `${channel.members.length} membres` : 'Direct message'}
                     </p>
                 </div>
+
+                {realtimeStatus === 'CHANNEL_ERROR' && (
+                    <div className="mr-4 px-3 py-1 bg-red-100 text-red-600 text-[10px] font-bold rounded-full animate-pulse border border-red-200">
+                        OFFLINE (WS BLOCKED)
+                    </div>
+                )}
+                {realtimeStatus === 'SUBSCRIBED' && (
+                    <div className="mr-4 w-2 h-2 bg-emerald-500 rounded-full shadow-[0_0_8px_rgba(16,185,129,0.5)]" title="En direct" />
+                )}
             </div>
 
             {/* Message List */}
