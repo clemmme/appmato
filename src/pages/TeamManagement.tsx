@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
     Users, Shield, UserCheck, UserMinus, Crown, Copy, Search,
-    ChevronDown, ArrowRight, Building2, RefreshCw, UserPlus
+    ArrowRight, RefreshCw, UserPlus
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -84,7 +84,6 @@ export default function TeamManagement() {
 
     // Team assignments state
     const [teamAssignments, setTeamAssignments] = useState<{ id: string; team_lead_id: string; collaborator_id: string }[]>([]);
-    const [loadingAssignments, setLoadingAssignments] = useState(false);
 
     const filteredMembers = useMemo(() => {
         if (!searchQuery) return members;
@@ -100,7 +99,6 @@ export default function TeamManagement() {
 
     const loadTeamAssignments = async () => {
         if (!currentOrg) return;
-        setLoadingAssignments(true);
         try {
             const { data, error } = await supabase.rpc('get_cabinet_assignments', {
                 p_org_id: currentOrg.id
@@ -120,8 +118,6 @@ export default function TeamManagement() {
             if (data) setTeamAssignments(data as any[]);
         } catch (err) {
             console.error(err);
-        } finally {
-            setLoadingAssignments(false);
         }
     };
 

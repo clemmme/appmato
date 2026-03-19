@@ -12,6 +12,8 @@ import { CommandPalette } from "@/components/CommandPalette";
 import Landing from "./pages/Landing";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
+import { WorkspaceProvider } from "@/contexts/WorkspaceContext";
+import { EasterEggProvider } from "@/contexts/EasterEggContext";
 import SuiviDossiers from "./pages/production/SuiviDossiers";
 import Revision from "./pages/production/Bilan";
 import Supervision from "./pages/production/Supervision";
@@ -28,7 +30,13 @@ import NotFound from "./pages/NotFound";
 import OutilsComptables from "./pages/tools/OutilsComptables";
 import VeilleInfo from "./pages/VeilleInfo";
 import Annuaire from "./pages/Annuaire";
-import AIAssistantPage from "./pages/Assistant";
+import Assistant from "./pages/Assistant";
+import Discussions from "./pages/Discussions";
+import { Messages } from './pages/Messages';
+import { lazy, Suspense, useEffect } from 'react';
+import { prefetchFeeds } from '@/lib/rssFetcher';
+
+const Integrations = lazy(() => import('./pages/Integrations'));
 
 const queryClient = new QueryClient();
 
@@ -60,6 +68,12 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 function AppRoutes() {
   const { user, loading } = useAuth();
 
+  useEffect(() => {
+    if (user) {
+      prefetchFeeds();
+    }
+  }, [user]);
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
@@ -87,9 +101,35 @@ function AppRoutes() {
         <Route path="/team" element={<ProtectedRoute><TeamManagement /></ProtectedRoute>} />
         <Route path="/cabinet" element={<ProtectedRoute><CabinetOverview /></ProtectedRoute>} />
         <Route path="/outils" element={<ProtectedRoute><OutilsComptables /></ProtectedRoute>} />
-        <Route path="/veille" element={<ProtectedRoute><VeilleInfo /></ProtectedRoute>} />
+        <Route path="/assistant" element={
+          <ProtectedRoute>
+            <Assistant />
+          </ProtectedRoute>
+        } />
+
+        <Route path="/news" element={
+          <Navigate to="/veille" replace />
+        } />
+        <Route path="/veille" element={
+          <ProtectedRoute>
+            <VeilleInfo />
+          </ProtectedRoute>
+        } />
+
         <Route path="/annuaire" element={<ProtectedRoute><Annuaire /></ProtectedRoute>} />
-        <Route path="/assistant" element={<ProtectedRoute><AIAssistantPage /></ProtectedRoute>} />
+        <Route path="/discussions" element={
+          <ProtectedRoute>
+            <Discussions />
+          </ProtectedRoute>
+        } />
+
+        <Route path="/messages" element={
+          <ProtectedRoute>
+            <Messages />
+          </ProtectedRoute>
+        } />
+
+        <Route path="/integrations" element={<ProtectedRoute><Suspense fallback={null}><Integrations /></Suspense></ProtectedRoute>} />
         <Route path="/aide" element={<ProtectedRoute><Help /></ProtectedRoute>} />
         <Route path="*" element={<NotFound />} />
       </Routes>
@@ -103,14 +143,18 @@ const App = () => (
       <TooltipProvider>
         <AuthProvider>
           <TimerProvider>
-            <Toaster />
-            <Sonner />
-            <BrowserRouter>
-              <OrganizationProvider>
-                <AppRoutes />
-                <GlobalTimerWidget />
-              </OrganizationProvider>
-            </BrowserRouter>
+            <EasterEggProvider>
+              <Toaster />
+              <Sonner />
+              <BrowserRouter>
+                <OrganizationProvider>
+                  <WorkspaceProvider>
+                    <AppRoutes />
+                    <GlobalTimerWidget />
+                  </WorkspaceProvider>
+                </OrganizationProvider>
+              </BrowserRouter>
+            </EasterEggProvider>
           </TimerProvider>
         </AuthProvider>
       </TooltipProvider>

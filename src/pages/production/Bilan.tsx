@@ -163,7 +163,7 @@ export default function Bilan() {
     }
   }, [bilanCyclesMap, toast]);
 
-  const handleSaveSupervision = useCallback(async (clientId: string, data: any) => {
+  const handleSaveSupervision = useCallback(async () => {
     toast({
       title: "Supervision validée",
       description: "La fiche de supervision a été enregistrée.",

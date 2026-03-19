@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { MainLayout } from '@/components/layout/MainLayout';
-import { HelpCircle, ClipboardList, Calculator, FileCheck, Eye, Archive, Scale, Clock, Users, LayoutDashboard, Phone, Mail, ChevronDown, ChevronUp, Timer, MessageCircle } from 'lucide-react';
+import { HelpCircle, ClipboardList, Calculator, FileCheck, Eye, Archive, Clock, Users, LayoutDashboard, Phone, Mail, ChevronDown, ChevronUp, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 

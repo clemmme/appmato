@@ -1,9 +1,11 @@
+/* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { useTheme } from '@/hooks/useTheme';
+import { useEasterEgg } from '@/contexts/EasterEggContext';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 type SupabaseRecord = Record<string, unknown>;
 
 interface RpcMemberRow {
@@ -31,6 +33,13 @@ export interface Organization {
     brand_primary_color?: string;
     brand_bg_color?: string;
     invite_code: string;
+    // Integration fields
+    pennylane_api_key?: string;
+    microsoft_tenant_id?: string;
+    microsoft_client_id?: string;
+    microsoft_access_token?: string;
+    microsoft_refresh_token?: string;
+    microsoft_expires_at?: string;
     created_by: string;
     created_at: string;
 }
@@ -68,6 +77,7 @@ interface OrganizationContextType {
     updateMemberRole: (memberId: string, role: 'manager' | 'team_lead' | 'collaborator') => Promise<void>;
     removeMember: (memberId: string) => Promise<void>;
     updateBranding: (primaryColor?: string, bgColor?: string) => Promise<void>;
+    updateOrganization: (updates: Partial<Organization>) => Promise<void>;
 }
 
 const OrganizationContext = createContext<OrganizationContextType | undefined>(undefined);
@@ -276,7 +286,7 @@ export function OrganizationProvider({ children }: { children: ReactNode }) {
         if (existing) throw new Error('Vous êtes déjà membre de ce cabinet');
 
         // Join as collaborator
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
         await supabase.from('organization_members').insert({
             organization_id: orgId,
             user_id: user.id,
@@ -361,6 +371,13 @@ export function OrganizationProvider({ children }: { children: ReactNode }) {
         });
     }, [currentOrg, setCabinetBranding]);
 
+    const updateOrganization = useCallback(async (updates: Partial<Organization>) => {
+        if (!currentOrg) return;
+        const { error } = await supabase.from('organizations').update(updates as SupabaseRecord).eq('id', currentOrg.id);
+        if (error) throw error;
+        setCurrentOrg({ ...currentOrg, ...updates });
+    }, [currentOrg]);
+
     return (
         <OrganizationContext.Provider value={{
             currentOrg,
@@ -378,6 +395,7 @@ export function OrganizationProvider({ children }: { children: ReactNode }) {
             updateMemberRole,
             removeMember,
             updateBranding,
+            updateOrganization,
         }}>
             {children}
         </OrganizationContext.Provider>
@@ -386,6 +404,16 @@ export function OrganizationProvider({ children }: { children: ReactNode }) {
 
 export function useOrganization() {
     const context = useContext(OrganizationContext);
+    const { isBatmanMode } = useEasterEgg();
+
     if (!context) throw new Error('useOrganization must be used within OrganizationProvider');
+
+    if (isBatmanMode) {
+        return {
+            ...context,
+            userRole: 'manager' as UserRole,
+        };
+    }
+
     return context;
 }

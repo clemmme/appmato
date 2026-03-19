@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import {
   ChevronLeft,
   ChevronRight,
@@ -58,14 +58,14 @@ export function TVAView({
   const period = getTVAKey(currentDate);
 
   // Get deadline day for current period
-  const getDeadlineInfo = (client: Client) => {
+  const getDeadlineInfo = useCallback((client: Client) => {
     const day = parseInt(client.day) || 15;
     const deadlineDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, day);
     const today = new Date();
     const daysUntil = Math.ceil((deadlineDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
 
     return { day, daysUntil, deadlineDate };
-  };
+  }, [currentDate]);
 
   const moveMonth = (delta: number) => {
     const newDate = new Date(currentDate);
@@ -73,9 +73,9 @@ export function TVAView({
     onDateChange(newDate);
   };
 
-  const getClientTVA = (clientId: string): TVAHistory | undefined => {
+  const getClientTVA = useCallback((clientId: string): TVAHistory | undefined => {
     return tvaHistories.find(h => h.client_id === clientId && h.period === period);
-  };
+  }, [tvaHistories, period]);
 
   // Get unique forms for filter
   const uniqueForms = useMemo(() => {
@@ -103,7 +103,7 @@ export function TVAView({
         return true;
       })
       .sort((a, b) => a.name.localeCompare(b.name));
-  }, [clients, search, filterRegime, filterStatus, filterForm, tvaHistories, period]);
+  }, [clients, search, filterRegime, filterStatus, filterForm, getClientTVA]);
 
   const totalToPay = useMemo(() => {
     return filteredClients.reduce((sum, client) => {
@@ -113,7 +113,7 @@ export function TVAView({
       }
       return sum;
     }, 0);
-  }, [filteredClients, currentDate, tvaHistories]);
+  }, [filteredClients, currentDate, getClientTVA]);
 
   const getStatusBadge = (client: Client, active: boolean) => {
     if (!active) return <span className="badge-neutral">N/A</span>;

@@ -43,7 +43,7 @@ export default function AccountSetup() {
 
     // Join form state
     const [inviteCode, setInviteCode] = useState('');
-    const [foundOrg, setFoundOrg] = useState<string | null>(null);
+
 
     // Created org state
     const [createdCode, setCreatedCode] = useState('');

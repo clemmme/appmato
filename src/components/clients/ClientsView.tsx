@@ -1,10 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useMemo, useCallback } from 'react';
-import { Plus, Pencil, Trash2, X, Search, Users, Upload, Mail, Phone, MapPin, Play, Clock, Eye, Download, Filter, UserPlus } from 'lucide-react';
+import { Plus, X, Search, Users, Upload, Mail, Phone, MapPin, Download, Filter } from 'lucide-react';
 import { useFavorites } from '@/hooks/useFavorites';
 import { useOrganization } from '@/contexts/OrganizationContext';
 import { useAuth } from '@/hooks/useAuth';
-import { FavoriteStar } from '@/components/ui/favorite-star';
 import type { Client, RegimeType, BilanCycle, TVAHistory } from '@/lib/database.types';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';

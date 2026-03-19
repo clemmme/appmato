@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#00e5ff",
+                        "accent-pink": "#FF2A85",
+                        "background-light": "#f5f8f8",
+                        "background-dark": "#0A0F1C",
+                        "surface": "#161D2F",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "1rem",
+                        "lg": "1.5rem",
+                        "xl": "2rem",
+                        "2xl": "2.5rem",
+                        "3xl": "3rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .glass {
+            background: rgba(22, 29, 47, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(0, 229, 255, 0.1);
+        }
+        .glass-hover:hover {
+            border: 1px solid rgba(0, 229, 255, 0.3);
+            box-shadow: 0 0 20px rgba(0, 229, 255, 0.1);
+        }
+        .glow-border {
+            box-shadow: 0 0 15px rgba(0, 229, 255, 0.15);
+        }
+        .glow-text-cyan {
+            text-shadow: 0 0 8px rgba(0, 229, 255, 0.5);
+        }
+        .glow-text-pink {
+            text-shadow: 0 0 8px rgba(255, 42, 133, 0.5);
+        }
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-background-dark text-slate-100 min-h-screen selection:bg-primary/30">
+<!-- Background Dotted Network Effect -->
+<div class="fixed inset-0 pointer-events-none opacity-20 overflow-hidden">
+<svg height="100%" width="100%" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<pattern height="40" id="dots" patternunits="userSpaceOnUse" width="40" x="0" y="0">
+<circle cx="2" cy="2" fill="#00e5ff" r="1"></circle>
+</pattern>
+</defs>
+<rect fill="url(#dots)" height="100%" width="100%"></rect>
+</svg>
+</div>
+<div class="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden">
+<!-- Header -->
+<header class="sticky top-0 z-50 flex items-center justify-between px-8 py-4 glass border-b border-primary/10">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-3">
+<div class="size-10 bg-gradient-to-br from-primary to-accent-pink rounded-xl flex items-center justify-center">
+<span class="material-symbols-outlined text-background-dark font-bold">bolt</span>
+</div>
+<h2 class="text-2xl font-bold tracking-tighter glow-text-cyan">PULSE</h2>
+</div>
+<div class="hidden md:flex bg-slate-800/50 rounded-full px-4 py-2 items-center gap-2 border border-primary/5">
+<span class="material-symbols-outlined text-primary text-sm">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm w-64 placeholder:text-slate-500" placeholder="Search the heartbeat..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="size-10 rounded-full glass flex items-center justify-center text-slate-300 hover:text-primary transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="size-10 rounded-full glass flex items-center justify-center text-slate-300 hover:text-primary transition-colors">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<div class="h-10 w-px bg-primary/10 mx-2"></div>
+<div class="flex items-center gap-3 glass px-4 py-1 rounded-full">
+<div class="text-right hidden sm:block">
+<p class="text-xs font-bold text-slate-100">Alex Rivera</p>
+<p class="text-[10px] text-primary uppercase tracking-widest">Lead Architect</p>
+</div>
+<div class="size-8 rounded-full bg-slate-700 border border-primary/30 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Professional headshot of a team member" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBiL2h4OSBi3hfXTCzythna7NW9ejDF7yNczycKYPXGBUNGbYH7K3vYpZovk-whQgH6k6JpAwILjF-MCBJwfH-oItAqDQA5NVzaXN22uObHYBWYrS1uW1Telcw7rA8-dl0lpCICFgf3ER7UAcFBMOErjMQuf-89IEH0Jrd-_cGCUJYn9HIDnYavLXSjA9x7ZqV40LGNP1c3m1sprLU-8vJado2ThuZWnSxh6zZmXzrN_yKxnHK35WVrSlW4ev9hLFzt6ZlWogrp3NM"/>
+</div>
+</div>
+</div>
+</header>
+<main class="flex flex-1 gap-8 p-8 max-w-[1600px] mx-auto w-full">
+<!-- Left Sidebar -->
+<aside class="w-80 flex flex-col gap-6 shrink-0 sticky top-24 h-fit">
+<!-- User Summary -->
+<div class="glass rounded-3xl p-6 relative overflow-hidden group">
+<div class="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -mr-16 -mt-16 blur-2xl group-hover:bg-primary/10 transition-colors"></div>
+<div class="flex flex-col gap-4">
+<div class="flex justify-between items-start">
+<div class="size-16 rounded-2xl bg-slate-800 border border-primary/20 p-1">
+<img class="w-full h-full object-cover rounded-xl" data-alt="User profile avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAJFChNnXJI9tEh280MKSJLcrh38M6-bPtIF_dQhedTWcQHWSKYtHWMSvtOFSNkA1p0G3q11sTWc9G1qwpydoZMKayUvq1zIhcLS-ftegFC7WIxh7SYynpxE_DNhBa4FodvAlBCbOpt0ZZqDCy1z19YD3snWUlPy8HpwgNCGVAmUU5--Mkddi1NI2VHRbPIb0K2Qabj-YVrGleKYWiFbcXTcEqtiPBhQtwE6AuLs4s6tEFyj7I91r3Ppn6i9w90_FZlGnad6bwkKsI"/>
+</div>
+<div class="bg-primary/10 text-primary text-[10px] font-bold px-2 py-1 rounded-full uppercase">Level 42</div>
+</div>
+<div>
+<h3 class="text-lg font-bold">Alex Rivera</h3>
+<p class="text-slate-400 text-sm">Architectural Design Group</p>
+</div>
+<div class="grid grid-cols-2 gap-2 mt-2">
+<div class="bg-slate-800/40 p-3 rounded-2xl border border-primary/5">
+<p class="text-[10px] text-slate-500 uppercase">Pulses</p>
+<p class="text-lg font-bold">128</p>
+</div>
+<div class="bg-slate-800/40 p-3 rounded-2xl border border-primary/5">
+<p class="text-[10px] text-slate-500 uppercase">Reach</p>
+<p class="text-lg font-bold text-accent-pink">2.4k</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Heartbeat Metrics -->
+<div class="glass rounded-3xl p-6 flex flex-col gap-5">
+<h4 class="text-xs font-bold text-primary uppercase tracking-[0.2em]">Company Heartbeat</h4>
+<div class="flex flex-col gap-4">
+<div class="flex items-center justify-between">
+<div>
+<p class="text-xs text-slate-400">Activity Rate</p>
+<p class="text-xl font-bold">98.2%</p>
+</div>
+<div class="h-8 w-24">
+<!-- Minimal Sparkline SVG -->
+<svg class="w-full h-full stroke-primary stroke-2 fill-none" viewbox="0 0 100 30">
+<path d="M0,25 L10,20 L20,28 L30,15 L40,22 L50,10 L60,18 L70,5 L80,12 L90,8 L100,15" stroke-linecap="round"></path>
+</svg>
+</div>
+</div>
+<div class="flex items-center justify-between">
+<div>
+<p class="text-xs text-slate-400">Collaboration</p>
+<p class="text-xl font-bold text-accent-pink">+14%</p>
+</div>
+<div class="h-8 w-24">
+<svg class="w-full h-full stroke-accent-pink stroke-2 fill-none opacity-70" viewbox="0 0 100 30">
+<path d="M0,15 L15,10 L30,20 L45,5 L60,15 L75,10 L90,25 L100,5" stroke-linecap="round"></path>
+</svg>
+</div>
+</div>
+</div>
+<button class="w-full py-3 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-bold hover:bg-primary/20 transition-all">
+                        View Detailed Metrics
+                    </button>
+</div>
+<!-- Quick Actions -->
+<div class="glass rounded-3xl p-2 flex flex-col gap-1">
+<button class="flex items-center gap-3 px-4 py-3 rounded-2xl bg-primary text-background-dark font-bold text-sm">
+<span class="material-symbols-outlined">home</span>
+                        Global Feed
+                    </button>
+<button class="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-primary/5 text-slate-400 font-medium text-sm transition-colors">
+<span class="material-symbols-outlined">group</span>
+                        Teams
+                    </button>
+<button class="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-primary/5 text-slate-400 font-medium text-sm transition-colors">
+<span class="material-symbols-outlined">analytics</span>
+                        Insight Lab
+                    </button>
+<button class="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-primary/5 text-slate-400 font-medium text-sm transition-colors">
+<span class="material-symbols-outlined">verified</span>
+                        Leaderboard
+                    </button>
+</div>
+</aside>
+<!-- Main Content Area -->
+<section class="flex-1 flex flex-col gap-8">
+<!-- Broadcast Area -->
+<div class="glass rounded-3xl p-6 glow-border">
+<div class="flex gap-4">
+<div class="size-12 rounded-2xl bg-slate-800 border border-primary/20 shrink-0 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="User avatar for post input" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD_vKaa5Iwc3_bQqSeLJLFD7OsjQLAQiXB_eO2LgxshoKdxEU5YXHZD8uaD5K1xrLdKhBSxlFfmcU8o2WFjytMizVuIgvGKvHToLFrhH_oj33drqdbLzF0fu1XpfdgFHnUyYp7GauAAUNRbg0oJjIrjhQsWKSofUjeVOXmENkTURcilEj6ZZD7_6CCRUKCN_VM7A8uDo-h0AXhWkIFGBi0712QU4bpWCe8RoBOP9BDZ6R8z-ojUcoI7DXjmxfKYzUVDhWi2aZCWOsk"/>
+</div>
+<div class="flex-1 flex flex-col gap-4">
+<textarea class="w-full bg-transparent border-none focus:ring-0 text-lg resize-none placeholder:text-slate-600 min-h-[80px]" placeholder="What's the pulse of your project today?"></textarea>
+<div class="flex items-center justify-between border-t border-primary/5 pt-4">
+<div class="flex gap-2">
+<button class="flex items-center gap-2 px-4 py-2 rounded-full glass-hover bg-slate-800/40 text-xs font-medium text-slate-300">
+<span class="material-symbols-outlined text-primary text-sm">image</span> Image
+                                    </button>
+<button class="flex items-center gap-2 px-4 py-2 rounded-full glass-hover bg-slate-800/40 text-xs font-medium text-slate-300">
+<span class="material-symbols-outlined text-accent-pink text-sm">description</span> Doc
+                                    </button>
+<button class="flex items-center gap-2 px-4 py-2 rounded-full glass-hover bg-slate-800/40 text-xs font-medium text-slate-300">
+<span class="material-symbols-outlined text-yellow-400 text-sm">alternate_email</span> Mention
+                                    </button>
+</div>
+<button class="px-8 py-2 rounded-full bg-primary text-background-dark font-bold text-sm shadow-[0_0_20px_rgba(0,229,255,0.3)] hover:scale-105 transition-transform">
+                                    Pulse Now
+                                </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Bento Grid Feed -->
+<div class="grid grid-cols-12 auto-rows-[160px] gap-6">
+<!-- Large Feature Post -->
+<div class="col-span-12 md:col-span-8 row-span-3 glass rounded-3xl p-0 overflow-hidden group relative border border-primary/10">
+<div class="absolute inset-0 bg-gradient-to-t from-background-dark via-transparent to-transparent z-10"></div>
+<img class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" data-alt="Futuristic satellite earth imagery" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBRvcWQRwNeNbVDHAhoyhslqHuXgTG8lWuDJWvSK3LgFPiOuVRoW0_s3zbI-Pcmyr-BDB_6sSNQwFTjaK6CHN-AeRqB3J__sH2lxIMM0o7q76zQePMFWSgZSn3pRn-WABkUWVUVCgPHr8HwRByymLWcjmq86BFYw-fwW2fWZw2DF6qC3yUm5q08UrZ7MlxKDnrAgfrzG0y8ALtKlFpx9ulErdtigO5MTxckgPtuia7EhmslQ9_hPB5PUekn1y1zRAnGL6ep4eg7sg4"/>
+<div class="absolute bottom-0 left-0 p-8 z-20 w-full">
+<div class="flex items-center gap-3 mb-4">
+<div class="bg-primary text-background-dark px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest">Major Milestone</div>
+<span class="text-xs text-slate-300">2 hours ago</span>
+</div>
+<h2 class="text-3xl font-bold mb-4 glow-text-cyan leading-tight">Quantum Core Phase 1: Fully Operational</h2>
+<p class="text-slate-200 max-w-xl mb-6 text-sm md:text-base opacity-90">Today marks the successful deployment of our proprietary synchronization layer across all regional nodes. Latency reduced by 40% globally.</p>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-4">
+<button class="flex items-center gap-2 text-accent-pink font-bold">
+<span class="material-symbols-outlined fill-accent-pink">favorite</span> 1.2k
+                                    </button>
+<button class="flex items-center gap-2 text-primary font-bold">
+<span class="material-symbols-outlined">chat_bubble</span> 48
+                                    </button>
+</div>
+<div class="flex -space-x-3">
+<div class="size-8 rounded-full border-2 border-background-dark bg-slate-600 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Team member portrait" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBnXerOPUuaNf969Q-aSqxOTkF4e5ZPBLC67c3A6X-vQkGWNJGNzqNfMW4ilYls4FFh6zDWrnwZyJqRXmZY2UlqhTdrRaLmLoriIqt0ftzFBUcrKHX_sTMDatXwg7vM4hp9sRBzjgiLoGCaGbzMuuhjQsGSVUb59YJ8ilMgntJTrxo7e7nq-BxzHhWUbKe0wlaiwLrelYA133H4CS372o7dzJk9liwSLJip-QflYj8uW7cWLueCKzX2KGvwxV1FTrqZqJJL_mxFsX8"/>
+</div>
+<div class="size-8 rounded-full border-2 border-background-dark bg-slate-600 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Team member portrait" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAg3GFcn9zjVI45HHd6Qa56eJb5G7Rk5eA1Q076H6DfdGiQvTLOvKPznFWcCVnaM0JhQ6IUMbjcLLGwvFZZGYPVMosUrcAkmcODI7JscJVMqF7d9GPXYMm0O8XFFbjN-ijIFTN7jV4EwLbW3_hSdJb2bgluNEALB6hf0zoJhZytIBZNP_xIBvofI4BWJKvvi6YAlSIyQhK24ZSo4TlZlzkJvt4Wm5LosCsGpL_eojCmxcGXQUP3NqZc_OXCIa6svegD4ZjNiM1jYiE"/>
+</div>
+<div class="size-8 rounded-full border-2 border-background-dark bg-slate-800 flex items-center justify-center text-[10px] font-bold">
+                                        +12
+                                    </div>
+</div>
+</div>
+</div>
+</div>
+<!-- Trending Topics Module -->
+<div class="col-span-12 md:col-span-4 row-span-2 glass rounded-3xl p-6 border border-primary/5 flex flex-col gap-6">
+<div class="flex items-center justify-between">
+<h3 class="text-sm font-bold uppercase tracking-widest text-primary">Trending Now</h3>
+<span class="material-symbols-outlined text-primary">trending_up</span>
+</div>
+<div class="flex flex-col gap-4">
+<div class="flex items-center justify-between p-3 rounded-2xl bg-slate-800/40 border border-primary/5">
+<div>
+<p class="text-xs text-slate-500">#NextGenUI</p>
+<p class="text-sm font-bold">45 Pulses</p>
+</div>
+<span class="material-symbols-outlined text-xs text-primary">add_circle</span>
+</div>
+<div class="flex items-center justify-between p-3 rounded-2xl bg-slate-800/40 border border-primary/5">
+<div>
+<p class="text-xs text-slate-500">#SustainabilityDrive</p>
+<p class="text-sm font-bold">32 Pulses</p>
+</div>
+<span class="material-symbols-outlined text-xs text-primary">add_circle</span>
+</div>
+<div class="flex items-center justify-between p-3 rounded-2xl bg-slate-800/40 border border-primary/5">
+<div>
+<p class="text-xs text-slate-500">#CoffeeChat</p>
+<p class="text-sm font-bold">28 Pulses</p>
+</div>
+<span class="material-symbols-outlined text-xs text-primary">add_circle</span>
+</div>
+</div>
+<button class="mt-auto text-center py-2 text-xs font-bold text-slate-500 hover:text-primary uppercase transition-colors">Explorer All Tags</button>
+</div>
+<!-- Recent File Module -->
+<div class="col-span-12 md:col-span-4 row-span-2 glass rounded-3xl p-6 border border-accent-pink/10">
+<h3 class="text-sm font-bold uppercase tracking-widest text-accent-pink mb-6">Nexus Repository</h3>
+<div class="flex flex-col gap-4">
+<div class="flex items-center gap-4 group cursor-pointer">
+<div class="size-10 rounded-xl bg-accent-pink/10 flex items-center justify-center text-accent-pink group-hover:bg-accent-pink group-hover:text-white transition-colors">
+<span class="material-symbols-outlined">terminal</span>
+</div>
+<div>
+<p class="text-sm font-bold">API_V3_Documentation.pdf</p>
+<p class="text-[10px] text-slate-500 uppercase">Uploaded by Engineering • 10MB</p>
+</div>
+</div>
+<div class="flex items-center gap-4 group cursor-pointer">
+<div class="size-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-background-dark transition-colors">
+<span class="material-symbols-outlined">brush</span>
+</div>
+<div>
+<p class="text-sm font-bold">Brand_Guidelines_2024.fig</p>
+<p class="text-[10px] text-slate-500 uppercase">Uploaded by Design • 142MB</p>
+</div>
+</div>
+<div class="flex items-center gap-4 group cursor-pointer">
+<div class="size-10 rounded-xl bg-yellow-400/10 flex items-center justify-center text-yellow-400 group-hover:bg-yellow-400 group-hover:text-background-dark transition-colors">
+<span class="material-symbols-outlined">table</span>
+</div>
+<div>
+<p class="text-sm font-bold">Q3_Projections_Final.xlsx</p>
+<p class="text-[10px] text-slate-500 uppercase">Uploaded by Finance • 2MB</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Small Status Post -->
+<div class="col-span-12 md:col-span-4 row-span-1 glass rounded-3xl p-6 flex flex-col justify-between border-l-4 border-l-primary/40">
+<div class="flex items-center gap-3">
+<div class="size-8 rounded-full bg-slate-700 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Team member Sarah's avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBWFNl7LXOgIoVgCFtzUBoRhQ3cchnQ09DlSwKRsErrlbg5KdI65C46xsUdI_UKBWgFSXR-KC8MY6PaQXQZ9QZEMVkhceUjM7o8yABNuUOFq-K5AHbHu1kn_XtBA1Q-hsa7PHu2T8rSQuYURF2DNqzUxLYRoAoPV5IB4VXUeY5GMxOJsuIvfupKrENEclSPkEUZNpKEx-IT5VlnFAVhN-ofjmsIAG2yPe2CdjjuklvJhuYGiB5_NbFKxuEkX9nyd9UtMATL0ni68ig"/>
+</div>
+<span class="text-sm font-bold">Sarah Chen</span>
+</div>
+<p class="text-sm text-slate-300">"Offsite booked for July! Check your emails for the final itinerary. ⛰️"</p>
+<div class="flex gap-4 text-[10px] text-slate-500 font-bold uppercase tracking-widest mt-2">
+<span>15 Likes</span>
+<span>3 Comments</span>
+</div>
+</div>
+<!-- Small Status Post 2 -->
+<div class="col-span-12 md:col-span-4 row-span-1 glass rounded-3xl p-6 flex flex-col justify-between border-l-4 border-l-accent-pink/40">
+<div class="flex items-center gap-3">
+<div class="size-8 rounded-full bg-slate-700 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Team member Marcus's avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAnBXC8w2eZOhZGLTjis0FlzLWpk-6C8pmaVtaYkeUduBdJgdO_Udr34maK09pKjr6ISFAK53GORrjqJ22dC3BH76v8XKHgJtQ9rFkUU_8x3uL_LZX0taEPn-nhkvKXiABZcYmDvGUr1-7ith3TsIHoKzsvjUJeEX0NYdDWNXjMkhGFiXhJuMxtdYGXhY-bzufuZsjx3N7R718765jeSCI2bb2cMeD0T8DMcyECf58n0DrlATyNCMBSYD5lj5R1O9dps93LHtrpO8k"/>
+</div>
+<span class="text-sm font-bold">Marcus Thorne</span>
+</div>
+<p class="text-sm text-slate-300">"Finally cracked that recursion bug. The dev server is back in action."</p>
+<div class="flex gap-4 text-[10px] text-slate-500 font-bold uppercase tracking-widest mt-2">
+<span class="text-primary">8 Likes</span>
+<span>1 Comment</span>
+</div>
+</div>
+<!-- Medium Image Post -->
+<div class="col-span-12 md:col-span-8 row-span-2 glass rounded-3xl overflow-hidden flex flex-col border border-primary/5">
+<div class="h-48 w-full relative">
+<img class="w-full h-full object-cover" data-alt="Modern workspace interior" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD9AtwE6O19d6YYiSxRcPBXlOGh1RlX4Y95PJbQ2ROJKSyKCnYKtTkUcYYx4yZ1kjVmY-ViesOxx54iW165J4112trMDgdbgzOXUTNNLOr_bF7AuGWRTPZc4cA9kxhEpUeYEPEO-KgjBBATTvodIMAECF2IzbuMDc_Bmfl98NmmSLCa_ik3IKFxhZHAdowvbKIBbpYL3Yzk2Xu1Ge4sXRfRoGIq-NyBZr_98WNyoPl9lPWqe9HF-0jEwHvoReQm7tVGTLJ-IVEvcjc"/>
+<div class="absolute inset-0 bg-primary/10 mix-blend-overlay"></div>
+</div>
+<div class="p-6">
+<div class="flex items-center justify-between mb-4">
+<div class="flex items-center gap-3">
+<div class="size-10 rounded-xl bg-slate-800 border border-primary/20 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="User avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBFC7wmCmxSCreWueBwZ74dUcDw7yOem0jvTTZ0fxsxThNVbh3YBmuuGdxFhgllC7jEEqrDAMT7kI8aRU_FBrbIp7f6pp4NC0N-X82xgteDNu2WL_8smfoZQofZ06tm8k558dF_KCK-SfQbXhJQlOafAYKgUACeI7FBmeGOTgFo_pKaseth8TRmh5YvjC9TeuMQGJgmHCzq6RILzLYe7OXPj-vmWdbXKLQbfNoekGpJSH38djn-K4R7MnZVCZ05VvpVFCr712XnLhk"/>
+</div>
+<div>
+<p class="text-sm font-bold">Architecture Team</p>
+<p class="text-[10px] text-slate-500 uppercase">Posted 5h ago</p>
+</div>
+</div>
+<div class="flex gap-1">
+<div class="size-1.5 rounded-full bg-primary"></div>
+<div class="size-1.5 rounded-full bg-primary opacity-50"></div>
+<div class="size-1.5 rounded-full bg-primary opacity-20"></div>
+</div>
+</div>
+<h4 class="text-xl font-bold mb-2">New Office Layout Finalized</h4>
+<p class="text-sm text-slate-400">Phase 2 expansion includes the bio-luminescent garden wall and the immersive VR lounge. Construction starts next week.</p>
+</div>
+</div>
+<!-- Connection Lines (Decorative SVG) -->
+<svg class="absolute hidden lg:block" style="width:0; height:0;">
+<defs>
+<pattern height="10" id="dotted" patternunits="userSpaceOnUse" width="10">
+<circle cx="2" cy="2" fill="rgba(0, 229, 255, 0.2)" r="1"></circle>
+</pattern>
+</defs>
+</svg>
+</div>
+</section>
+</main>
+</div>
+<!-- Floating Command Center Action -->
+<div class="fixed bottom-8 right-8 z-50">
+<button class="size-16 rounded-3xl bg-primary text-background-dark shadow-[0_0_30px_rgba(0,229,255,0.4)] flex items-center justify-center hover:scale-110 transition-transform active:scale-95 group overflow-hidden">
+<div class="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+<span class="material-symbols-outlined text-3xl relative z-10 font-bold">add</span>
+</button>
+</div>
+</body></html>

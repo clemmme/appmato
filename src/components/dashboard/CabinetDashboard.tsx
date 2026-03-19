@@ -21,9 +21,6 @@ import {
   BarChart3,
   Search,
   PieChart as PieChartIcon,
-  UserPlus,
-  FileText,
-  CalendarDays,
   ClipboardList,
   Calculator,
   Wrench,
@@ -88,7 +85,7 @@ const LAUNCHPAD_MODULES = [
   { label: 'Dossiers Clients', icon: Users, path: '/clients', color: 'from-indigo-500/20 to-transparent', iconColor: 'text-indigo-500', desc: "Carnet d'adresses" },
   { label: 'Outils Pratiques', icon: Wrench, path: '/outils', color: 'from-fuchsia-500/20 to-transparent', iconColor: 'text-fuchsia-500', desc: "Simulateurs, PCG, IK..." },
   { label: 'Annuaire Entreprises', icon: Building2, path: '/annuaire', color: 'from-indigo-500/20 to-transparent', iconColor: 'text-indigo-500', desc: "Recherche SIREN, SIRET..." },
-  { label: 'MATO AI', icon: Sparkles, path: '/assistant', color: 'from-violet-500/20 to-transparent', iconColor: 'text-violet-500', desc: "Assistant IA expert" },
+  { label: 'Alfred', icon: Sparkles, path: '/assistant', color: 'from-violet-500/20 to-transparent', iconColor: 'text-violet-500', desc: "Assistant IA expert" },
   { label: 'Actualités & Veille', icon: Newspaper, path: '/veille', color: 'from-zinc-500/10 to-transparent', iconColor: 'text-zinc-400', desc: "Flux métier" },
 ];
 

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { supabase } from '@/integrations/supabase/client';
-import type { ChatChannel, ChatMember, ChatMessage } from '@/lib/database.types';
+import type { ChatMessage } from '@/lib/database.types';
 
 export const chatService = {
     /**
@@ -97,6 +97,18 @@ export const chatService = {
         if (membersErr) throw membersErr;
 
         return channel;
+    },
+
+    /**
+     * Renommer un canal (Group)
+     */
+    async renameChannel(channelId: string, newName: string) {
+        const { error } = await supabase
+            .from('chat_channels')
+            .update({ name: newName, updated_at: new Date().toISOString() })
+            .eq('id', channelId);
+
+        if (error) throw error;
     },
 
     /**

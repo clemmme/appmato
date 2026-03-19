@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
-  ClipboardList, Calculator, FileCheck, Scale, Users, LogOut, Settings,
+  ClipboardList, FileCheck, Scale, Users, LogOut, Settings,
   ChevronDown, LayoutDashboard, Menu, X, Clock, Eye, HelpCircle, Archive,
-  Moon, Sun, Search, Building2, Shield, Wrench, Newspaper, Sparkles
+  Moon, Sun, Search, Building2, Shield, Wrench, Newspaper, Sparkles, Link2,
+  MessageCircle, Lock, Layout
 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useTheme } from '@/hooks/useTheme';
@@ -13,20 +14,23 @@ import { supabase } from '@/integrations/supabase/client';
 import { DigitalClock } from './DigitalClock';
 import { OnboardingWizard } from '@/components/onboarding/OnboardingWizard';
 import { AppLogo } from '@/components/ui/AppLogo';
+import { WorkspaceSwitcher } from './WorkspaceSwitcher';
+import { useWorkspace } from '@/contexts/WorkspaceContext';
+import { NotificationBell } from '../notifications/NotificationBell';
 
-type ViewType = 'dashboard' | 'suivi-dossiers' | 'tva' | 'revision' | 'supervision' | 'cloture' | 'ctrl' | 'temps' | 'clients' | 'settings' | 'outils' | 'news' | 'annuaire' | 'assistant';
-
-interface NavItem { id: ViewType; label: string; icon: React.ElementType; path: string; badge?: string }
+type ViewType = 'dashboard' | 'suivi-dossiers' | 'tva' | 'revision' | 'supervision' | 'cloture' | 'ctrl' | 'temps' | 'clients' | 'settings' | 'outils' | 'news' | 'annuaire' | 'assistant' | 'integrations' | 'discussions' | 'messages';
 
 const categories = [
   {
     title: "Général",
+    workspace: "gestion",
     items: [
       { id: 'dashboard' as ViewType, label: 'Accueil', icon: LayoutDashboard, path: '/dashboard' },
     ]
   },
   {
     title: "Production Comptable",
+    workspace: "gestion",
     items: [
       { id: 'suivi-dossiers' as ViewType, label: 'Suivi des Dossiers', icon: ClipboardList, path: '/production/suivi-dossiers' },
       { id: 'revision' as ViewType, label: 'Révision', icon: FileCheck, path: '/production/revision' },
@@ -37,6 +41,7 @@ const categories = [
   },
   {
     title: "Référentiel",
+    workspace: "gestion",
     items: [
       { id: 'clients' as ViewType, label: 'Dossiers', icon: Users, path: '/clients' },
       { id: 'annuaire' as ViewType, label: 'Annuaire Entreprises', icon: Building2, path: '/annuaire' },
@@ -44,11 +49,32 @@ const categories = [
     ]
   },
   {
-    title: "Nouveautés",
+    title: "Outils",
+    workspace: "gestion",
     items: [
       { id: 'outils' as ViewType, label: 'Outils Comptables', icon: Wrench, path: '/outils' },
-      { id: 'assistant' as ViewType, label: 'MATO AI', icon: Sparkles, path: '/assistant', badge: '✨ Nouveau' },
-      { id: 'news' as ViewType, label: 'Veille & Infos', icon: Newspaper, path: '/veille' },
+    ]
+  },
+  {
+    title: "Intelligence & Veille",
+    workspace: "pulse",
+    items: [
+      { id: 'assistant' as ViewType, label: 'Alfred', icon: Sparkles, path: '/assistant' },
+      { id: 'news' as ViewType, label: 'Veille Informationnelle', icon: Newspaper, path: '/veille' },
+    ]
+  },
+  {
+    title: "Collaboration",
+    workspace: "pulse",
+    items: [
+      { id: 'messages' as ViewType, label: 'Messagerie', icon: MessageCircle, path: '/messages', badge: 'New' },
+    ]
+  },
+  {
+    title: "Réseau",
+    workspace: "pulse",
+    items: [
+      { id: 'discussions' as ViewType, label: 'Pulse Feed', icon: Layout, path: '/discussions' },
     ]
   }
 ];
@@ -61,6 +87,7 @@ export function AppSidebar() {
   const { user, signOut } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const { currentOrg, userRole, accountType } = useOrganization();
+  const { activeWorkspace } = useWorkspace();
   const [isCabinetOpen, setIsCabinetOpen] = useState(true);
   const [profile, setProfile] = useState<{ avatar_url?: string | null } | null>(null);
 
@@ -103,13 +130,7 @@ export function AppSidebar() {
             <AppLogo size="md" showSubtext />
           </button>
           <div className="flex items-center gap-1">
-            <button
-              onClick={toggleTheme}
-              className="p-2 rounded-xl hover:bg-muted transition-colors text-muted-foreground hover:text-primary"
-              title={theme === 'dark' ? 'Mode clair' : 'Mode sombre'}
-            >
-              {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-            </button>
+            <NotificationBell />
             <button
               onClick={() => setShowHelp(true)}
               className="p-2 rounded-xl hover:bg-muted transition-colors text-muted-foreground hover:text-primary"
@@ -136,9 +157,11 @@ export function AppSidebar() {
         </button>
       </div>
 
+      <WorkspaceSwitcher />
+
       {/* Navigation */}
       <nav className="flex-1 px-3 py-4 space-y-6 overflow-y-auto scrollbar-hide">
-        {categories.map((category, idx) => (
+        {categories.filter(c => c.workspace === activeWorkspace).map((category, idx) => (
           <div key={idx} className="px-2">
             <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/70 ml-2 mb-2 block">
               {category.title}
@@ -171,8 +194,8 @@ export function AppSidebar() {
           </div>
         ))}
 
-        {/* Cabinet Section — visible only for managers and team leads */}
-        {accountType === 'cabinet' && (userRole === 'manager' || userRole === 'team_lead') && (
+        {/* Cabinet Section — visible only for managers and team leads - Only in Gestion */}
+        {activeWorkspace === 'gestion' && accountType === 'cabinet' && (userRole === 'manager' || userRole === 'team_lead') && (
           <div className="px-2">
             <button onClick={() => setIsCabinetOpen(!isCabinetOpen)}
               className="flex items-center justify-between w-full px-2 mb-2 group/cab"

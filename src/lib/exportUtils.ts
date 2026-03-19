@@ -1,8 +1,8 @@
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
-import * as XLSX from 'xlsx';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
+import { exportToExcelExcelJS } from './excelExport';
 
 interface TableColumn {
     header: string;
@@ -128,55 +128,5 @@ export function exportToPDF(data: ExportData) {
  * Exporter des données au format Excel natif (XLSX)
  */
 export function exportToExcel(data: ExportData) {
-    const wb = XLSX.utils.book_new();
-
-    // 1. Prepare Summary Data if present
-    const sheetData: (string | number)[][] = [];
-
-    if (data.subtitle) {
-        sheetData.push([data.subtitle]);
-    }
-
-    sheetData.push([`Généré le:`, format(new Date(), "dd/MM/yyyy HH:mm")]);
-    sheetData.push([]); // Empty line
-
-    if (data.summary && data.summary.length > 0) {
-        sheetData.push(...data.summary);
-        sheetData.push([]); // Empty line
-    }
-
-    // 2. Prepare Headers for Main Table
-    if (data.headers.length > 0) {
-        sheetData.push(data.headers.map(h => h.header));
-
-        // 3. Prepare Data rows (Strip euro signs and format strings to raw numbers where possible)
-        const numericRows = data.rows.map(row => {
-            return data.headers.map(h => {
-                const val = row[h.dataKey] as string | number;
-                if (typeof val === 'string') {
-                    // Try to clean "1 250,50 €" to Number(1250.50) for proper Excel typing
-                    const cleaned = val.replace(/€|km|h\/sem/g, '').replace(/\s/g, '').replace(',', '.');
-                    if (!isNaN(Number(cleaned)) && cleaned.trim() !== '') {
-                        return Number(cleaned);
-                    }
-                }
-                return val;
-            });
-        });
-
-        sheetData.push(...numericRows);
-    }
-
-    const ws = XLSX.utils.aoa_to_sheet(sheetData);
-
-    // Adjust column widths automatically
-    const cols = [{ wch: 30 }]; // First col slightly wider usually
-    for (let i = 1; i < (data.headers.length || 5); i++) {
-        cols.push({ wch: 15 });
-    }
-    ws['!cols'] = cols;
-
-    XLSX.utils.book_append_sheet(wb, ws, "Simulation");
-
-    XLSX.writeFile(wb, `${data.filename}_${format(new Date(), 'yyyyMMdd_HHmm')}.xlsx`);
+    exportToExcelExcelJS(data);
 }

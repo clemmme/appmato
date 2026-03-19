@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 
 import { createContext, useContext, useEffect, useState, useCallback, type ReactNode } from 'react';
 
@@ -77,12 +78,10 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   // Load user specific preferences when userId changes
   useEffect(() => {
     if (userId) {
-      const storedTheme = localStorage.getItem(`appmato_theme_${userId}`) as Theme;
+      // Dark mode disabled — always use light theme
+      setTheme('light');
+
       const storedColor = localStorage.getItem(`appmato_color_theme_${userId}`) as ColorTheme;
-
-      if (storedTheme) setTheme(storedTheme);
-      else setTheme(window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-
       if (storedColor) setColorThemeState(storedColor);
       else setColorThemeState('orange');
     } else {
@@ -96,11 +95,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const root = document.documentElement;
     root.classList.remove('light', 'dark');
-    root.classList.add(theme);
-
-    if (userId) {
-      localStorage.setItem(`appmato_theme_${userId}`, theme);
-    }
+    root.classList.add('light'); // Always force light
   }, [theme, userId]);
 
   // Apply Color Theme & Save to LocalStorage (only if logged in)

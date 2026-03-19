@@ -72,7 +72,6 @@ export function SupervisionForm({
   const [qcmChecks, setQcmChecks] = useState<string[]>(initialData?.qcmChecks || []);
   const [rdvChefDate, setRdvChefDate] = useState<string>(initialData?.rdvChefDate || '');
   const [mentionedUserIds, setMentionedUserIds] = useState<string[]>([]);
-
   // Get all notes from cycles
   const notesFromCycles = useMemo(() => {
     return bilanCycles
@@ -331,11 +330,7 @@ export function SupervisionForm({
           onChange={setComments}
           placeholder="Notes additionnelles, remarques, points d'attention... (@ pour taguer un collègue)"
           className="input-premium min-h-[120px]"
-          onMentionDetected={(userIds) => {
-            // We can optionally store these IDs in state if we want to explicitly track who was mentioned,
-            // or handle it upstream during onSave.
-            console.log("Mentioned in supervision:", userIds);
-          }}
+          onMentionDetected={setMentionedUserIds}
         />
       </div>
 

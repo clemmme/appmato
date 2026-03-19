@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '@/hooks/useTheme';
 import {
-  Check, ArrowRight, BarChart3, Clock, FileText, Users,
-  Shield, Zap, Sparkles, Star, TrendingUp, Cloud,
+  Check, BarChart3, Clock, FileText, Users,
+  Shield, Zap, Sparkles, Star, Cloud,
   Database, Server, MonitorPlay, MousePointerClick, CheckCircle2, ChevronDown
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';

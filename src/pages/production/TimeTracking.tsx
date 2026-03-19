@@ -6,7 +6,6 @@ import { useToast } from '@/hooks/use-toast';
 import type { Client } from '@/lib/database.types';
 import { Loader2, Plus, CalendarDays, LayoutList, TrendingUp, Calendar as CalendarIcon } from 'lucide-react';
 import { format, startOfMonth, endOfMonth, parseISO } from 'date-fns';
-import { fr } from 'date-fns/locale';
 import { Button } from '@/components/ui/button';
 import { WeekView } from '@/components/calendar/WeekView';
 import { DayView } from '@/components/calendar/DayView';
@@ -78,7 +77,7 @@ export default function TimeTracking() {
     } finally {
       setLoading(false);
     }
-  }, [currentDate, toast]);
+  }, [currentDate, toast, user?.id]);
 
   useEffect(() => {
     if (user) {

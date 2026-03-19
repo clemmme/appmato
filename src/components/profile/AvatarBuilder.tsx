@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import { Slider } from '@/components/ui/slider';
 import { RefreshCw, Save, Check, ChevronLeft, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { supabase } from '@/integrations/supabase/client';
@@ -167,7 +166,7 @@ export function AvatarBuilder({ currentAvatarUrl, onSave, onCancel }: AvatarBuil
             const seed = seedParam && !isNaN(Number(seedParam)) ? Number(seedParam) : 1;
             const bgColor = urlObj.searchParams.get('backgroundColor') || 'transparent';
             return { style, seed, bgColor };
-        } catch (e) {
+        } catch {
             return { style: 'micah', seed: 1, bgColor: 'transparent' };
         }
     };

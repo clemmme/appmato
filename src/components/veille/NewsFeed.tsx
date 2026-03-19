@@ -26,28 +26,34 @@ export function NewsFeed() {
         setLoading(true);
         setError(null);
 
-        if (!forceRefresh) {
-            const cached = getCachedFeeds();
-            if (cached && cached.length > 0) {
-                setItems(cached);
+        // STALE: Load from cache immediately (even if expired)
+        const cached = getCachedFeeds(true);
+        if (cached && cached.length > 0) {
+            setItems(cached);
+            // If cache is fresh enough, stop here unless forced
+            const isFresh = getCachedFeeds(false);
+            if (isFresh && !forceRefresh) {
                 setLoading(false);
                 return;
             }
         }
 
+        // REVALIDATE: Fetch in background
         try {
             const results = await fetchAllFeeds();
             if (results.length > 0) {
                 setItems(results);
                 setCachedFeeds(results);
-            } else {
+            } else if (items.length === 0) {
                 setError('Aucun article trouvé. Les sources sont peut-être temporairement indisponibles.');
             }
         } catch {
-            setError('Erreur de connexion aux flux RSS.');
+            if (items.length === 0) {
+                setError('Erreur de connexion aux flux RSS.');
+            }
         }
         setLoading(false);
-    }, []);
+    }, [items.length]);
 
     useEffect(() => {
         loadFeeds();

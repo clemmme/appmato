@@ -200,3 +200,56 @@ export interface ChatMessage {
   // Included via Join
   profile?: Profile;
 }
+
+// ============================================
+// PULSE FEED & NOTIFICATIONS TYPES
+// ============================================
+
+export interface PulsePost {
+  id: string;
+  author_id: string;
+  organization_id: string;
+  content: string;
+  media_url?: string | null;
+  created_at: string;
+  updated_at: string;
+  // Included via Join
+  author?: Profile;
+  likes_count?: number;
+  comments_count?: number;
+  is_liked_by_me?: boolean;
+}
+
+export interface PulseComment {
+  id: string;
+  post_id: string;
+  author_id: string;
+  organization_id: string;
+  content: string;
+  created_at: string;
+  // Included via Join
+  author?: Profile;
+}
+
+export interface PulseLike {
+  id: string;
+  post_id: string;
+  user_id: string;
+  organization_id: string;
+  created_at: string;
+}
+
+export interface Notification {
+  id: string;
+  user_id: string;
+  actor_id: string | null;
+  organization_id: string;
+  type: 'post_like' | 'post_comment' | 'new_post' | 'chat_message' | 'mention';
+  entity_id: string | null;
+  message: string | null;
+  is_read: boolean;
+  created_at: string;
+  // Included via Join
+  actor?: Profile;
+}
+

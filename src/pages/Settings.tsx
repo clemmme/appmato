@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { useTheme } from '@/hooks/useTheme';
 import { supabase } from '@/integrations/supabase/client';
@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
-import { User, Building2, Mail, Save, Loader2, Clock, Palette, Copy, Shield, ArrowRight, Sparkles, Briefcase, Users, Link2, Paintbrush, RotateCcw } from 'lucide-react';
+import { User, Building2, Mail, Save, Loader2, Palette, Copy, Shield, ArrowRight, Sparkles, Briefcase, Users, Link2, Paintbrush, RotateCcw, Lock } from 'lucide-react';
 import { WorkScheduleSettings } from '@/components/profile/WorkScheduleSettings';
 import { useOrganization } from '@/contexts/OrganizationContext';
 import { Link } from 'react-router-dom';
@@ -44,13 +44,7 @@ export default function Settings() {
   // Avatar Builder state
   const [showAvatarBuilder, setShowAvatarBuilder] = useState(false);
 
-  useEffect(() => {
-    if (user) {
-      fetchProfile();
-    }
-  }, [user]);
-
-  const fetchProfile = async () => {
+  const fetchProfile = useCallback(async () => {
     try {
       const { data, error } = await supabase
         .from('profiles')
@@ -75,7 +69,13 @@ export default function Settings() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user, toast]);
+
+  useEffect(() => {
+    if (user) {
+      fetchProfile();
+    }
+  }, [user, fetchProfile]);
 
   const handleSave = async () => {
     if (!user) return;
@@ -247,46 +247,38 @@ export default function Settings() {
               Apparence
             </h3>
             <div className="space-y-6">
-              <div>
-                <Label className="stat-label mb-3 block">Couleur Principale</Label>
-                <div className="flex flex-wrap gap-4">
-                  {[
-                    { id: 'orange', name: 'Orange', bg: 'bg-[#f97316]' },
-                    { id: 'blue', name: 'Bleu', bg: 'bg-[#3b82f6]' },
-                    { id: 'green', name: 'Vert', bg: 'bg-[#22c55e]' },
-                    { id: 'red', name: 'Rouge', bg: 'bg-[#ef4444]' },
-                    { id: 'pink', name: 'Rose', bg: 'bg-[#ec4899]' },
-                    { id: 'yellow', name: 'Jaune', bg: 'bg-[#eab308]' },
-                  ].map((color) => (
-                    <button
-                      type="button"
-                      key={color.id}
-                      onClick={() => setColorTheme(color.id as any)}
-                      className={`w-10 h-10 rounded-full ${color.bg} transition-all duration-300 border-[3px] shadow-sm flex items-center justify-center ${colorTheme === color.id ? 'border-foreground scale-110 shadow-md ring-2 ring-primary/20 ring-offset-2 ring-offset-background' : 'border-transparent hover:scale-105'
-                        }`}
-                      title={color.name}
-                    />
-                  ))}
-                </div>
-              </div>
-
-              <div className="pt-2 border-t border-border">
-                <Label className="stat-label mb-3 block">Mode d'affichage</Label>
-                <div className="flex items-center justify-between bg-muted/30 p-4 rounded-2xl border border-border/50">
-                  <div>
-                    <p className="font-medium text-sm">Thème {theme === 'dark' ? 'Sombre' : 'Clair'}</p>
-                    <p className="text-xs text-muted-foreground mt-0.5">Ajuste l'interface globale</p>
+              {(userRole === 'manager' || userRole === 'team_lead') ? (
+                <div>
+                  <Label className="stat-label mb-3 block">Couleur Principale</Label>
+                  <div className="flex flex-wrap gap-4">
+                    {[
+                      { id: 'orange', name: 'Orange', bg: 'bg-[#f97316]' },
+                      { id: 'blue', name: 'Bleu', bg: 'bg-[#3b82f6]' },
+                      { id: 'green', name: 'Vert', bg: 'bg-[#22c55e]' },
+                      { id: 'red', name: 'Rouge', bg: 'bg-[#ef4444]' },
+                      { id: 'pink', name: 'Rose', bg: 'bg-[#ec4899]' },
+                      { id: 'yellow', name: 'Jaune', bg: 'bg-[#eab308]' },
+                    ].map((color) => (
+                      <button
+                        type="button"
+                        key={color.id}
+                        onClick={() => setColorTheme(color.id as any)}
+                        className={`w-10 h-10 rounded-full ${color.bg} transition-all duration-300 border-[3px] shadow-sm flex items-center justify-center ${colorTheme === color.id ? 'border-foreground scale-110 shadow-md ring-2 ring-primary/20 ring-offset-2 ring-offset-background' : 'border-transparent hover:scale-105'
+                          }`}
+                        title={color.name}
+                      />
+                    ))}
                   </div>
-                  <Button
-                    variant={theme === 'dark' ? "default" : "secondary"}
-                    size="sm"
-                    onClick={toggleTheme}
-                    className="rounded-xl px-4"
-                  >
-                    Basculer le thème
-                  </Button>
                 </div>
-              </div>
+              ) : (
+                <div className="flex items-center gap-3 p-4 rounded-2xl bg-muted/30 border border-border/50">
+                  <Lock className="w-5 h-5 text-muted-foreground" />
+                  <div>
+                    <p className="font-medium text-sm">Accès limité</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">Seul le manager du cabinet peut modifier l'apparence.</p>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 

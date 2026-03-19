@@ -1,18 +1,18 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { useOrganization } from '@/contexts/OrganizationContext';
 import { supabase } from '@/integrations/supabase/client';
 import {
     Users, FileCheck, Calculator, Clock, TrendingUp, Building2,
-    Crown, Shield, UserCheck, BarChart3, Activity, ChevronDown
+    Crown, Shield, UserCheck, BarChart3, Activity
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { formatCurrencyShort } from '@/lib/calculations';
+
 import { Progress } from '@/components/ui/progress';
 import {
     BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip,
-    ResponsiveContainer, Cell, PieChart, Pie, Legend
+    ResponsiveContainer, Cell, PieChart, Pie
 } from 'recharts';
 
 interface CollaboratorStats {
@@ -43,18 +43,12 @@ const CHART_COLORS = [
 ];
 
 export default function CabinetOverview() {
-    const { currentOrg, members, userRole, refreshMembers } = useOrganization();
+    const { currentOrg, members, userRole } = useOrganization();
     const [stats, setStats] = useState<CollaboratorStats[]>([]);
     const [loading, setLoading] = useState(true);
     const [filterRole, setFilterRole] = useState<string>('all');
 
-    useEffect(() => {
-        if (currentOrg && members.length > 0) {
-            loadStats();
-        }
-    }, [currentOrg, members]);
-
-    const loadStats = async () => {
+    const loadStats = useCallback(async () => {
         if (!currentOrg) return;
         setLoading(true);
         try {
@@ -136,7 +130,13 @@ export default function CabinetOverview() {
         } finally {
             setLoading(false);
         }
-    };
+    }, [currentOrg, members]);
+
+    useEffect(() => {
+        if (currentOrg && members.length > 0) {
+            loadStats();
+        }
+    }, [currentOrg, members, loadStats]);
 
     const filteredStats = useMemo(() => {
         if (filterRole === 'all') return stats;
@@ -164,13 +164,7 @@ export default function CabinetOverview() {
         filteredStats.map(s => ({ name: s.name.split(' ')[0], heures: Math.round(s.timeHours * 10) / 10 })),
         [filteredStats]);
 
-    const chartTvaData = useMemo(() =>
-        filteredStats.map(s => ({
-            name: s.name.split(' ')[0],
-            fait: s.tvaCompleted,
-            restant: s.tvaTotal - s.tvaCompleted,
-        })),
-        [filteredStats]);
+
 
     const roleDistribution = useMemo(() => {
         const counts: Record<string, number> = {};

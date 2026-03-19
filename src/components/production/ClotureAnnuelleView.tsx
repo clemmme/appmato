@@ -2,7 +2,6 @@
 import { useState, useMemo, useCallback } from 'react';
 import { Search, FileCheck, Calendar, Scale, FileText, CheckCircle, AlertTriangle, ArrowRight, ChevronRight, Euro, Users, Building, Share2, Printer } from 'lucide-react';
 import { useFavorites } from '@/hooks/useFavorites';
-import { FavoriteStar } from '@/components/ui/favorite-star';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import type { Client, BilanCycle } from '@/lib/database.types';
@@ -13,7 +12,6 @@ import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Progress } from '@/components/ui/progress';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
-import { useTimer } from '@/contexts/TimerContext';
 import { cn } from '@/lib/utils';
 
 interface ClotureData {
@@ -76,8 +74,7 @@ export function ClotureAnnuelleView({
   onSaveCloture,
   onCreateCalendarEvent
 }: ClotureAnnuelleViewProps) {
-  const { isFavorite, toggleFavorite, sortWithFavorites } = useFavorites();
-  const { startTimer, timerState } = useTimer();
+  const { sortWithFavorites } = useFavorites();
   const [search, setSearch] = useState('');
   const [selectedClientId, setSelectedClientId] = useState<string | null>(null);
   const [currentStep, setCurrentStep] = useState<ClotureStep>('rdv_bilan');

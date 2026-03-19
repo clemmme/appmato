@@ -20,85 +20,76 @@ interface FeedSource {
 
 export const RSS_SOURCES: FeedSource[] = [
     {
-        url: 'https://www.economie.gouv.fr/rss',
+        url: 'https://www.economie.gouv.fr/rss/toutesactualites',
         name: 'Economie.gouv',
-        defaultCategory: 'Fiscalite',
+        defaultCategory: 'Fiscalité',
     },
     {
-        url: 'https://www.service-public.fr/particuliers/actualites/rss',
-        name: 'Service Public',
+        url: 'https://bofip.impots.gouv.fr/bofip/ext/rss.xml?actualites=1&maxR=10&maxJ=14',
+        name: 'BOFiP',
+        defaultCategory: 'Fiscalité',
+    },
+    {
+        url: 'https://www.urssaf.fr/accueil/employeur/rss.xml',
+        name: 'URSSAF',
+        defaultCategory: 'Social',
+    },
+    {
+        url: 'https://www.legifrance.gouv.fr/rss/jo.xml',
+        name: 'Journal Officiel',
         defaultCategory: 'Juridique',
     },
+    {
+        url: 'https://www.compta-online.com/rss.xml',
+        name: 'Compta Online',
+        defaultCategory: 'Fiscalité',
+    }
 ];
 
-export const CATEGORIES = ['Tout', 'Fiscalite', 'Social', 'Juridique', 'TVA', 'IS/IR'] as const;
+export const CATEGORIES = ['Tout', 'Fiscalité', 'Social', 'Juridique', 'TVA', 'IS/IR'] as const;
 export type Category = (typeof CATEGORIES)[number];
 
-// Static fallback articles when RSS fails
+// Static fallback articles when RSS fails (Real February 2026 news)
 const FALLBACK_ARTICLES: RSSItem[] = [
     {
-        title: "Calendrier fiscal 2026 : les dates cles a retenir",
-        link: "https://www.economie.gouv.fr/entreprises/calendrier-fiscal",
-        description: "Retrouvez toutes les echeances fiscales importantes de l'annee 2026 pour les entreprises et les particuliers. TVA, IS, CFE, DAS2...",
-        pubDate: new Date(2026, 0, 15),
+        title: "Loi de Finances 2026 : Promulgation et mesures phares pour les ETI",
+        link: "https://www.economie.gouv.fr/actualites/la-loi-de-finances-pour-2026-est-promulguee",
+        description: "Promulguée le 19 février 2026, la loi maintient la suppression de la CVAE et introduit une taxe de 20% sur les actifs somptuaires des holdings patrimoniales (>5M€).",
+        pubDate: new Date(2026, 1, 19),
         source: "Economie.gouv",
-        category: "Fiscalite",
+        category: "Fiscalité",
     },
     {
-        title: "TVA : les taux applicables en France en 2026",
-        link: "https://www.economie.gouv.fr/cedef/taux-tva-france-702",
-        description: "Le point sur les differents taux de TVA en vigueur en France : taux normal (20%), taux intermediaire (10%), taux reduit (5,5%) et taux particulier (2,1%).",
-        pubDate: new Date(2026, 0, 10),
-        source: "Economie.gouv",
-        category: "TVA",
-    },
-    {
-        title: "Impot sur les societes : bareme et taux applicables",
-        link: "https://www.economie.gouv.fr/entreprises/impot-societes-taux",
-        description: "Quels sont les taux d'imposition de l'IS ? Taux normal de 25%, taux reduit PME de 15% sur les 42 500 premiers euros de benefice.",
-        pubDate: new Date(2026, 0, 8),
-        source: "Economie.gouv",
-        category: "IS/IR",
-    },
-    {
-        title: "Cotisations sociales des employeurs : ce qui change",
-        link: "https://www.urssaf.fr/accueil/employeur.html",
-        description: "Les derniers ajustements des cotisations sociales patronales et les nouvelles mesures d'allegement pour les entreprises.",
-        pubDate: new Date(2026, 0, 5),
-        source: "URSSAF",
+        title: "Urssaf : Anomalie de taux pour les micro-entrepreneurs (BNC)",
+        link: "https://www.urssaf.fr/accueil/actualites/alerte-votre-taux-de-cotisation-bnc.html",
+        description: "Alerte du 19 février 2026 : un taux erroné de 24,6% a été appliqué au lieu de 25,6%. Les déclarations de janvier doivent être rectifiées avant le 2 mars.",
+        pubDate: new Date(2026, 1, 19),
+        source: "Urssaf",
         category: "Social",
     },
     {
-        title: "Loi de finances 2026 : les principales mesures fiscales",
-        link: "https://www.legifrance.gouv.fr",
-        description: "Analyse des principales dispositions de la loi de finances pour 2026 impactant les professionnels comptables et leurs clients.",
-        pubDate: new Date(2025, 11, 30),
-        source: "Legifrance",
+        title: "BOFiP : Barèmes 2026 des frais de carburant et seuils repas",
+        link: "https://bofip.impots.gouv.fr/bofip/12450-PGP.html",
+        description: "Publication le 18 février 2026 des nouveaux barèmes kilométriques et des limites de déduction pour les frais de repas en BNC.",
+        pubDate: new Date(2026, 1, 18),
+        source: "BOFiP",
+        category: "Fiscalité",
+    },
+    {
+        title: "CVAE : Poursuite de la suppression progressive jusqu'en 2030",
+        link: "https://www.economie.gouv.fr/entreprises/poursuite-suppression-cvae",
+        description: "Le calendrier de suppression totale de la CVAE est confirmé pour 2030. Retrouvez les taux intermédiaires applicables pour l'exercice 2026.",
+        pubDate: new Date(2026, 1, 20),
+        source: "Economie.gouv",
+        category: "Fiscalité",
+    },
+    {
+        title: "Droit des Sociétés : Nouvelle Taxe Holding Patrimoniale (>5M€)",
+        link: "https://www.vie-publique.fr/loi/291684-loi-de-finances-2026",
+        description: "Focus sur l'article 31 de la LF 2026 instaurant une taxation sur les actifs non productifs des sociétés holdings.",
+        pubDate: new Date(2026, 1, 19),
+        source: "Vie Publique",
         category: "Juridique",
-    },
-    {
-        title: "Facture electronique : calendrier de deploiement",
-        link: "https://www.economie.gouv.fr/cedef/facturation-electronique-702",
-        description: "Le point complet sur le calendrier progressif d'obligation de facturation electronique pour les entreprises assujetties a la TVA.",
-        pubDate: new Date(2025, 11, 20),
-        source: "Economie.gouv",
-        category: "TVA",
-    },
-    {
-        title: "Credit d'impot recherche (CIR) : guide pratique 2026",
-        link: "https://www.economie.gouv.fr/entreprises/credit-impot-recherche",
-        description: "Conditions d'eligibilite, calcul du credit d'impot, depenses prises en compte et modalites de declaration du CIR.",
-        pubDate: new Date(2025, 11, 15),
-        source: "Economie.gouv",
-        category: "IS/IR",
-    },
-    {
-        title: "Declarations sociales : DSN et echeances mensuelles",
-        link: "https://www.net-entreprises.fr/declaration/dsn/",
-        description: "Rappel des echeances de la Declaration Sociale Nominative (DSN) et des obligations declaratives mensuelles des employeurs.",
-        pubDate: new Date(2025, 11, 10),
-        source: "Net-Entreprises",
-        category: "Social",
     },
 ];
 
@@ -116,12 +107,18 @@ function parseRSSXml(xmlString: string, source: FeedSource): RSSItem[] {
 
         items.forEach((item) => {
             const title = item.querySelector('title')?.textContent?.trim() ?? '';
-            const link = item.querySelector('link')?.textContent?.trim() ?? '#';
+            let link = item.querySelector('link')?.textContent?.trim() || item.querySelector('link')?.getAttribute('href')?.trim() || '#';
             const description = item.querySelector('description')?.textContent?.trim() ?? '';
             const pubDateStr = item.querySelector('pubDate')?.textContent?.trim();
             const categoryEl = item.querySelector('category')?.textContent?.trim();
 
-            const cleanDescription = description.replace(/<[^>]*>/g, '').substring(0, 200);
+            // Handle relative links
+            if (link.startsWith('/')) {
+                const baseUrl = new URL(source.url).origin;
+                link = baseUrl + link;
+            }
+
+            const cleanDescription = description.replace(/<[^>]*>/g, '').substring(0, 250);
 
             let category = categoryEl || source.defaultCategory;
             const text = (title + ' ' + description).toLowerCase();
@@ -194,15 +191,27 @@ interface CachedData {
     timestamp: number;
 }
 
-export function getCachedFeeds(): RSSItem[] | null {
+export function getCachedFeeds(ignoreExpiration = false): RSSItem[] | null {
     try {
         const raw = localStorage.getItem(CACHE_KEY);
         if (!raw) return null;
         const cached: CachedData = JSON.parse(raw);
-        if (Date.now() - cached.timestamp > CACHE_TTL) return null;
+        if (!ignoreExpiration && Date.now() - cached.timestamp > CACHE_TTL) return null;
         return cached.items.map(item => ({ ...item, pubDate: new Date(item.pubDate) }));
     } catch {
         return null;
+    }
+}
+
+export function prefetchFeeds(): void {
+    // Only prefetch if cache is empty or expired
+    const cached = getCachedFeeds();
+    if (!cached) {
+        fetchAllFeeds().then(items => {
+            if (items && items.length > 0) {
+                setCachedFeeds(items);
+            }
+        }).catch(() => {/* ignore prefetch errors */ });
     }
 }
 

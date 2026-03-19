@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useRef } from 'react';
-import * as XLSX from 'xlsx';
+import { parseExcelFile, downloadImportTemplate } from '@/lib/excelExport';
 import { X, FileSpreadsheet, AlertCircle, Check, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -71,18 +71,13 @@ export function ClientImportModal({ isOpen, onClose, onImport }: ClientImportMod
     setErrors([]);
 
     try {
-      const buffer = await selectedFile.arrayBuffer();
-      const workbook = XLSX.read(buffer, { type: 'array' });
-      const sheetName = workbook.SheetNames[0];
-      const sheet = workbook.Sheets[sheetName];
-      const jsonData = XLSX.utils.sheet_to_json(sheet, { defval: '' });
+      const jsonData = await parseExcelFile(selectedFile);
 
       if (jsonData.length === 0) {
         setErrors(['Le fichier est vide ou mal formaté.']);
         return;
       }
 
-      const firstRow = jsonData[0] as Record<string, any>;
 
       // Map columns
       const parsedClients: ImportedClient[] = jsonData.map((row: any) => {
@@ -150,7 +145,7 @@ export function ClientImportModal({ isOpen, onClose, onImport }: ClientImportMod
     handleClose();
   };
 
-  const downloadTemplate = () => {
+  const downloadTemplate = async () => {
     const template = [
       {
         code_dossier: 'CLI001',
@@ -176,10 +171,7 @@ export function ClientImportModal({ isOpen, onClose, onImport }: ClientImportMod
         nb_etablissements: 1
       }
     ];
-    const ws = XLSX.utils.json_to_sheet(template);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Clients');
-    XLSX.writeFile(wb, 'modele_import_clients.xlsx');
+    await downloadImportTemplate(template, 'modele_import_clients.xlsx');
   };
 
   if (!isOpen) return null;

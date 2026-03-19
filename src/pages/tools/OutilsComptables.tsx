@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { cn } from '@/lib/utils';
-import { Calculator, BookMarked, Landmark, Percent, Euro, Car, Wrench, Building2, CreditCard, Globe, TrendingUp } from 'lucide-react';
+import {
+    Calculator, BookMarked, Landmark, Percent, Euro, Car, Wrench,
+    Building2, CreditCard, Globe, TrendingUp, ChevronLeft, ArrowRight
+} from 'lucide-react';
 import { AdvancedCalculator } from '@/components/tools/AdvancedCalculator';
 import { PlanComptable } from '@/components/tools/PlanComptable';
 import { LoanSimulator } from '@/components/tools/LoanSimulator';
@@ -15,26 +18,26 @@ import { IBANChecker } from '@/components/tools/IBANChecker';
 import { ExchangeRates } from '@/components/tools/ExchangeRates';
 
 const TOOLS = [
-    { id: 'calc', label: 'Calculatrice', icon: Calculator, description: 'Calculatrice experte avec historique' },
-    { id: 'pcg', label: 'PCG 2026', icon: BookMarked, description: 'Recherche rapide de comptes' },
-    { id: 'tva_hub', label: 'Pilotage TVA', icon: BookMarked, description: 'Gestion des déclarations' },
-    { id: 'tva', label: 'Calcul TVA', icon: Percent, description: 'HT/TTC, Marge, Inversée' },
-    { id: 'loan', label: 'Emprunts', icon: Landmark, description: 'Amortissement complet' },
-    { id: 'salary', label: 'Simul. Paie', icon: Euro, description: 'Brut, Net, Coût employeur' },
-    { id: 'ik', label: 'IK 2026', icon: Car, description: 'Barème kilométrique auto' },
-    { id: 'entreprise', label: 'Annuaire', icon: Building2, description: 'Recherche entreprise INSEE' },
-    { id: 'vat', label: 'TVA Intra', icon: Globe, description: 'Vérification VIES européen' },
-    { id: 'iban', label: 'IBAN', icon: CreditCard, description: 'Validation IBAN ISO 13616' },
-    { id: 'exchange', label: 'Devises', icon: TrendingUp, description: 'Taux de change EUR temps réel' },
+    { id: 'calc', label: 'Calculatrice', icon: Calculator, description: 'Calculatrice experte avec historique', color: 'from-blue-500/20 to-transparent', iconColor: 'text-blue-500' },
+    { id: 'pcg', label: 'PCG 2026', icon: BookMarked, description: 'Recherche rapide de comptes', color: 'from-emerald-500/20 to-transparent', iconColor: 'text-emerald-500' },
+    { id: 'tva_hub', label: 'Pilotage TVA', icon: BookMarked, description: 'Gestion des déclarations', color: 'from-indigo-500/20 to-transparent', iconColor: 'text-indigo-500' },
+    { id: 'tva', label: 'Calcul TVA', icon: Percent, description: 'HT/TTC, Marge, Inversée', color: 'from-rose-500/20 to-transparent', iconColor: 'text-rose-500' },
+    { id: 'loan', label: 'Emprunts', icon: Landmark, description: 'Amortissement complet', color: 'from-amber-500/20 to-transparent', iconColor: 'text-amber-500' },
+    { id: 'salary', label: 'Simul. Paie', icon: Euro, description: 'Brut, Net, Coût employeur', color: 'from-emerald-500/20 to-transparent', iconColor: 'text-emerald-500' },
+    { id: 'ik', label: 'IK 2026', icon: Car, description: 'Barème kilométrique auto', color: 'from-pink-500/20 to-transparent', iconColor: 'text-pink-500' },
+    { id: 'entreprise', label: 'Annuaire', icon: Building2, description: 'Recherche entreprise INSEE', color: 'from-indigo-500/20 to-transparent', iconColor: 'text-indigo-500' },
+    { id: 'vat', label: 'TVA Intra', icon: Globe, description: 'Vérification VIES européen', color: 'from-violet-500/20 to-transparent', iconColor: 'text-violet-500' },
+    { id: 'iban', label: 'IBAN', icon: CreditCard, description: 'Validation IBAN ISO 13616', color: 'from-slate-500/20 to-transparent', iconColor: 'text-slate-500' },
+    { id: 'exchange', label: 'Devises', icon: TrendingUp, description: 'Taux de change EUR temps réel', color: 'from-fuchsia-500/20 to-transparent', iconColor: 'text-fuchsia-500' },
 ];
 
 export default function OutilsComptables() {
-    const [activeTool, setActiveTool] = useState(TOOLS[0].id);
+    const [activeTool, setActiveTool] = useState<string | null>(null);
 
     const CurrentTool = () => {
         switch (activeTool) {
             case 'calc':
-                return <div className="max-w-md mx-auto h-[600px] w-full mt-8 animate-in zoom-in-95 duration-500"><AdvancedCalculator /></div>;
+                return <div className="max-w-md mx-auto h-[600px] w-full mt-4 animate-in zoom-in-95 duration-500"><AdvancedCalculator /></div>;
             case 'pcg':
                 return <div className="h-full flex flex-col"><PlanComptable /></div>;
             case 'tva_hub':
@@ -60,6 +63,8 @@ export default function OutilsComptables() {
         }
     };
 
+    const selectedTool = TOOLS.find(t => t.id === activeTool);
+
     return (
         <MainLayout>
             <div className="relative min-h-[calc(100vh-5rem)] overflow-hidden bg-slate-50/50 dark:bg-background">
@@ -71,74 +76,75 @@ export default function OutilsComptables() {
                 </div>
 
                 <div className="relative p-6 lg:p-8 max-w-[1500px] mx-auto z-10 animate-in fade-in duration-700">
-                    <div className="mb-8 lg:mb-12 text-center lg:text-left">
-                        <h1 className="text-4xl lg:text-5xl font-extrabold tracking-tight flex flex-col lg:flex-row items-center gap-4">
-                            <span className="p-4 bg-gradient-to-br from-primary to-indigo-600 text-white rounded-2xl shadow-xl shadow-primary/20 rotate-3 hover:rotate-0 transition-transform duration-300">
-                                <Wrench className="w-8 h-8" />
-                            </span>
-                            <span className="bg-clip-text text-transparent bg-gradient-to-r from-slate-900 via-primary to-indigo-600 dark:from-white dark:to-slate-300">
-                                Boîte à Outils
-                            </span>
-                        </h1>
-                        <p className="text-muted-foreground mt-4 text-lg max-w-2xl">
-                            La suite d'utilitaires instantanés pour vos calculs quotidiens. Conçue pour la vitesse et la précision.
-                        </p>
-                    </div>
-
-                    <div className="flex flex-col xl:flex-row gap-8">
-                        {/* Sidebar / Hub Menu */}
-                        <div className="w-full xl:w-80 grid grid-cols-2 md:grid-cols-3 xl:grid-cols-1 gap-3 xl:gap-4 self-start xl:sticky xl:top-8">
-                            {TOOLS.map((tool) => {
-                                const isActive = activeTool === tool.id;
-                                return (
-                                    <button
-                                        key={tool.id}
-                                        onClick={() => setActiveTool(tool.id)}
-                                        className={cn(
-                                            "group relative p-4 rounded-3xl text-left transition-all duration-500 border flex flex-col xl:flex-row gap-4 items-start xl:items-center overflow-hidden",
-                                            isActive
-                                                ? "bg-gradient-to-br from-primary via-primary/90 to-indigo-600 text-white border-transparent shadow-2xl shadow-primary/30 scale-[1.02] xl:scale-105"
-                                                : "bg-white/60 dark:bg-background/40 backdrop-blur-md border-white/40 dark:border-border/40 hover:bg-white/80 dark:hover:bg-background/60 hover:border-white/80 dark:hover:border-border/80 hover:scale-[1.02] text-slate-700 dark:text-slate-200 shadow-sm"
-                                        )}
-                                    >
-                                        {/* Indicator line for active */}
-                                        {isActive && (
-                                            <div className="hidden xl:block absolute left-0 top-1/2 -translate-y-1/2 w-1.5 h-1/2 bg-white/40 rounded-r-full" />
-                                        )}
-
-                                        <div className={cn(
-                                            "p-3 rounded-2xl transition-all duration-300 shadow-sm shrink-0",
-                                            isActive
-                                                ? "bg-white/20 text-white shadow-inner backdrop-blur-sm"
-                                                : "bg-primary/5 text-primary group-hover:bg-primary/10 group-hover:scale-110"
-                                        )}>
-                                            <tool.icon className="w-6 h-6" />
-                                        </div>
-                                        <div className="flex-1">
-                                            <h3 className={cn("font-bold text-base tracking-tight", isActive ? "text-white" : "group-hover:text-primary transition-colors")}>
-                                                {tool.label}
-                                            </h3>
-                                            <p className={cn("text-xs font-medium mt-1.5 leading-snug hidden xl:block", isActive ? "text-primary-foreground/90" : "text-muted-foreground")}>
-                                                {tool.description}
-                                            </p>
-                                        </div>
-                                    </button>
-                                );
-                            })}
+                    {/* Header */}
+                    <div className="mb-8 lg:mb-12 flex flex-col md:flex-row md:items-center justify-between gap-6">
+                        <div className="text-center lg:text-left">
+                            <h1 className="text-4xl lg:text-5xl font-extrabold tracking-tight flex flex-col lg:flex-row items-center gap-4">
+                                <span className="p-4 bg-gradient-to-br from-primary to-indigo-600 text-white rounded-2xl shadow-xl shadow-primary/20 rotate-3 hover:rotate-0 transition-transform duration-300">
+                                    <Wrench className="w-8 h-8" />
+                                </span>
+                                <span className="bg-clip-text text-transparent bg-gradient-to-r from-slate-900 via-primary to-indigo-600 dark:from-white dark:to-slate-300">
+                                    Boîte à Outils
+                                </span>
+                            </h1>
+                            <p className="text-muted-foreground mt-4 text-lg max-w-2xl">
+                                {activeTool
+                                    ? selectedTool?.description
+                                    : "La suite d'utilitaires instantanés pour vos calculs quotidiens. Conçue pour la vitesse et la précision."
+                                }
+                            </p>
                         </div>
 
-                        {/* Active Tool Area */}
-                        <div className="flex-1 min-w-0 relative">
-                            {/* Glassmorphism Container */}
-                            <div className="bg-white/70 dark:bg-card/40 backdrop-blur-2xl border border-white/50 dark:border-white/10 rounded-[2.5rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] p-3 md:p-6 overflow-hidden relative min-h-[750px] flex flex-col">
-                                <div className="absolute inset-0 bg-gradient-to-b from-white/40 to-transparent dark:from-white/5 pointer-events-none" />
+                        {activeTool && (
+                            <button
+                                onClick={() => setActiveTool(null)}
+                                className="flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-white/80 dark:bg-muted/30 border border-border/50 text-sm font-bold text-muted-foreground hover:text-primary transition-all hover:shadow-lg backdrop-blur-sm self-center md:self-auto"
+                            >
+                                <ChevronLeft className="w-4 h-4" />
+                                Retour au Hub
+                            </button>
+                        )}
+                    </div>
 
-                                <div className="relative z-10 flex-1 flex flex-col animate-in slide-in-from-bottom-8 fade-in duration-700 fill-mode-both" key={activeTool}>
+                    {!activeTool ? (
+                        /* Tool Hub Grid (Dashboard Style) */
+                        <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 lg:gap-6 animate-in fade-in slide-in-from-bottom-8 duration-700">
+                            {TOOLS.map((tool, idx) => (
+                                <button
+                                    key={tool.id}
+                                    onClick={() => setActiveTool(tool.id)}
+                                    className="group relative overflow-hidden rounded-[2rem] border border-border/50 bg-white/40 dark:bg-background/40 backdrop-blur-md p-6 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:shadow-primary/10 text-left"
+                                >
+                                    <div className={cn("absolute inset-0 bg-gradient-to-br opacity-0 group-hover:opacity-100 transition-opacity duration-700 z-0", tool.color)} />
+
+                                    <div className="relative z-10 flex flex-col h-full">
+                                        <div className="flex justify-between items-start mb-6">
+                                            <div className={cn("p-3.5 rounded-2xl bg-white/80 dark:bg-background/80 shadow-sm backdrop-blur-sm transition-transform duration-500 group-hover:scale-110", tool.iconColor)}>
+                                                <tool.icon className="w-6 h-6" />
+                                            </div>
+                                            <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all -translate-x-4 group-hover:translate-x-0 duration-500">
+                                                <ArrowRight className="w-5 h-5 text-primary" />
+                                            </div>
+                                        </div>
+                                        <div className="mt-auto">
+                                            <h3 className="font-extrabold text-foreground text-xl mb-2 group-hover:text-primary transition-colors">{tool.label}</h3>
+                                            <p className="text-sm text-muted-foreground font-medium leading-relaxed opacity-80 group-hover:opacity-100">{tool.description}</p>
+                                        </div>
+                                    </div>
+                                </button>
+                            ))}
+                        </div>
+                    ) : (
+                        /* Active Tool View */
+                        <div className="animate-in slide-in-from-bottom-8 fade-in duration-700">
+                            <div className="bg-white/70 dark:bg-card/40 backdrop-blur-2xl border border-white/50 dark:border-white/10 rounded-[2.5rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] p-3 md:p-8 overflow-hidden relative min-h-[750px] flex flex-col">
+                                <div className="absolute inset-0 bg-gradient-to-b from-white/40 to-transparent dark:from-white/5 pointer-events-none" />
+                                <div className="relative z-10 flex-1 flex flex-col">
                                     <CurrentTool />
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    )}
                 </div>
             </div>
         </MainLayout>

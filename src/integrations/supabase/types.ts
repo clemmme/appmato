@@ -445,6 +445,15 @@ export type Database = {
           brand_primary_color: string | null
           brand_bg_color: string | null
           invite_code: string
+          pennylane_api_key: string | null
+          pennylane_access_token: string | null
+          pennylane_refresh_token: string | null
+          pennylane_expires_at: string | null
+          microsoft_tenant_id: string | null
+          microsoft_client_id: string | null
+          microsoft_access_token: string | null
+          microsoft_refresh_token: string | null
+          microsoft_expires_at: string | null
           created_by: string
           created_at: string
         }
@@ -462,6 +471,15 @@ export type Database = {
           brand_primary_color?: string | null
           brand_bg_color?: string | null
           invite_code?: string
+          pennylane_api_key?: string | null
+          pennylane_access_token?: string | null
+          pennylane_refresh_token?: string | null
+          pennylane_expires_at?: string | null
+          microsoft_tenant_id?: string | null
+          microsoft_client_id?: string | null
+          microsoft_access_token?: string | null
+          microsoft_refresh_token?: string | null
+          microsoft_expires_at?: string | null
           created_by: string
           created_at?: string
         }
@@ -479,6 +497,15 @@ export type Database = {
           brand_primary_color?: string | null
           brand_bg_color?: string | null
           invite_code?: string
+          pennylane_api_key?: string | null
+          pennylane_access_token?: string | null
+          pennylane_refresh_token?: string | null
+          pennylane_expires_at?: string | null
+          microsoft_tenant_id?: string | null
+          microsoft_client_id?: string | null
+          microsoft_access_token?: string | null
+          microsoft_refresh_token?: string | null
+          microsoft_expires_at?: string | null
           created_by?: string
           created_at?: string
         }
@@ -731,6 +758,164 @@ export type Database = {
             referencedRelation: "clients"
             referencedColumns: ["id"]
           },
+        ]
+      }
+      pulse_posts: {
+        Row: {
+          id: string
+          author_id: string
+          content: string
+          media_url: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          author_id: string
+          content: string
+          media_url?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          author_id?: string
+          content?: string
+          media_url?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pulse_posts_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      pulse_comments: {
+        Row: {
+          id: string
+          post_id: string
+          author_id: string
+          content: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          post_id: string
+          author_id: string
+          content: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          post_id?: string
+          author_id?: string
+          content?: string
+          created_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pulse_comments_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "pulse_posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pulse_comments_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      pulse_likes: {
+        Row: {
+          id: string
+          post_id: string
+          user_id: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          post_id: string
+          user_id: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          post_id?: string
+          user_id?: string
+          created_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pulse_likes_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "pulse_posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pulse_likes_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      notifications: {
+        Row: {
+          id: string
+          user_id: string
+          actor_id: string | null
+          type: string
+          entity_id: string | null
+          message: string | null
+          is_read: boolean
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          actor_id?: string | null
+          type: string
+          entity_id?: string | null
+          message?: string | null
+          is_read?: boolean
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          actor_id?: string | null
+          type?: string
+          entity_id?: string | null
+          message?: string | null
+          is_read?: boolean
+          created_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notifications_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notifications_actor_id_fkey"
+            columns: ["actor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          }
         ]
       }
     }

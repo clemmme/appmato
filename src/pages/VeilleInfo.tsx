@@ -5,6 +5,8 @@ import { Newspaper, Search, CalendarDays, Sparkles } from 'lucide-react';
 import { NewsFeed } from '@/components/veille/NewsFeed';
 import { BofipSearch } from '@/components/veille/BofipSearch';
 import { FiscalCalendar } from '@/components/veille/FiscalCalendar';
+import { AIVeilleSummary } from '@/components/veille/AIVeilleSummary';
+import { getCachedFeeds } from '@/lib/rssFetcher';
 
 const TABS = [
     { id: 'news', label: 'Actualités', icon: Newspaper, description: 'Flux comptable & fiscal' },
@@ -14,6 +16,7 @@ const TABS = [
 
 export default function VeilleInfo() {
     const [activeTab, setActiveTab] = useState(TABS[0].id);
+    const cachedItems = getCachedFeeds(true) || [];
 
     const CurrentView = () => {
         switch (activeTab) {
@@ -40,8 +43,8 @@ export default function VeilleInfo() {
 
                 <div className="relative z-10 flex flex-col h-full">
                     {/* Header */}
-                    <div className="px-6 lg:px-10 pt-8 pb-4">
-                        <div className="flex items-center gap-3 mb-2">
+                    <div className="px-6 lg:px-10 pt-8 pb-4 flex flex-col md:flex-row md:items-center justify-between gap-6">
+                        <div className="flex items-center gap-3">
                             <div className="p-2.5 bg-gradient-to-br from-indigo-500 to-blue-600 rounded-2xl shadow-lg shadow-indigo-500/20">
                                 <Sparkles className="w-6 h-6 text-white" />
                             </div>
@@ -49,6 +52,19 @@ export default function VeilleInfo() {
                                 <h1 className="text-3xl font-black tracking-tight text-slate-800 dark:text-slate-100">Veille Informationnelle</h1>
                                 <p className="text-muted-foreground font-medium">Actualités, recherche BOFiP et échéances fiscales</p>
                             </div>
+                        </div>
+
+                        <div className="flex items-center gap-3">
+                            <a
+                                href="https://www.economie.gouv.fr/les-lettres-dinformation-des-ministeres-economiques-et-financiers"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="hidden lg:flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl bg-white/50 dark:bg-card/30 text-muted-foreground border border-white/50 dark:border-white/10 hover:text-foreground transition-all"
+                            >
+                                <Newspaper className="w-4 h-4" />
+                                Newsletter Bercy
+                            </a>
+                            <AIVeilleSummary items={cachedItems} />
                         </div>
                     </div>
 

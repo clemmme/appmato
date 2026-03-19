@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Plus, X, Calculator, FileCheck, Users, Clock, Scale, Zap
+  X, Calculator, FileCheck, Users, Clock, Scale, Zap
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 

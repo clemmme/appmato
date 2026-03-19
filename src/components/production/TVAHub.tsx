@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { useFavorites } from '@/hooks/useFavorites';
 import { FavoriteStar } from '@/components/ui/favorite-star';
 import {
@@ -73,14 +73,14 @@ export function TVAHub({
   const period = getTVAKey(currentDate);
 
   // Get deadline info for a client
-  const getDeadlineInfo = (client: Client) => {
+  const getDeadlineInfo = useCallback((client: Client) => {
     const day = parseInt(client.day) || 15;
     const deadlineDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, day);
     const today = new Date();
     const daysUntil = Math.ceil((deadlineDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
 
     return { day, daysUntil, deadlineDate };
-  };
+  }, [currentDate]);
 
   const moveMonth = (delta: number) => {
     const newDate = new Date(currentDate);
@@ -88,9 +88,9 @@ export function TVAHub({
     onDateChange(newDate);
   };
 
-  const getClientTVA = (clientId: string): TVAHistory | undefined => {
+  const getClientTVA = useCallback((clientId: string): TVAHistory | undefined => {
     return tvaHistories.find(h => h.client_id === clientId && h.period === period);
-  };
+  }, [tvaHistories, period]);
 
   // Active clients only (for TVA)
   const activeClients = useMemo(() => {
@@ -143,7 +143,7 @@ export function TVAHub({
         const { daysUntil: daysB } = getDeadlineInfo(b);
         return daysA - daysB;
       });
-  }, [activeClients, search, filterRegime, filterStatus, filterDeadline, tvaHistories, period, currentDate, favoriteIds]);
+  }, [activeClients, search, filterRegime, filterStatus, filterDeadline, favoriteIds, getClientTVA, getDeadlineInfo]);
 
   // Global progress stats
   const progressStats = useMemo(() => {
@@ -158,7 +158,7 @@ export function TVAHub({
     const totalAmount = activeClients.reduce((sum, c) => sum + (getClientTVA(c.id)?.amount || 0), 0);
 
     return { total, done, inProgress, todo, percentage, totalAmount };
-  }, [activeClients, tvaHistories, period]);
+  }, [activeClients, getClientTVA]);
 
   // Selected client and TVA
   const selectedClient = useMemo(() => {
@@ -167,7 +167,7 @@ export function TVAHub({
 
   const selectedTVA = useMemo(() => {
     return selectedClientId ? getClientTVA(selectedClientId) : undefined;
-  }, [selectedClientId, tvaHistories, period]);
+  }, [selectedClientId, getClientTVA]);
 
   const getStepProgress = (tva: TVAHistory | undefined) => {
     if (!tva) return 0;

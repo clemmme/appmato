@@ -1,5 +1,5 @@
-import { useState, useEffect, useCallback } from 'react';
-import { Bell, BellOff, Clock } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Bell, BellOff } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
@@ -62,7 +62,7 @@ export function NotificationManager({ onReminderTriggered }: NotificationManager
 
     // Check every minute
     const interval = setInterval(checkTime, 60000);
-    
+
     // Also check immediately
     checkTime();
 
@@ -106,8 +106,8 @@ export function NotificationManager({ onReminderTriggered }: NotificationManager
       localStorage.setItem('timeReminderEnabled', String(!isEnabled));
       toast({
         title: !isEnabled ? "Rappel activé" : "Rappel désactivé",
-        description: !isEnabled 
-          ? "Rappel quotidien à 17h30 activé." 
+        description: !isEnabled
+          ? "Rappel quotidien à 17h30 activé."
           : "Rappel quotidien désactivé."
       });
     }

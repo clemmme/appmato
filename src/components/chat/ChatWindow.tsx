@@ -10,6 +10,8 @@ import { fr } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { supabase } from '@/integrations/supabase/client';
+import { Pencil, X } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 
 interface ChatWindowProps {
     channel: ChatChannel & { members: any[] };
@@ -23,6 +25,12 @@ export function ChatWindow({ channel, onBack }: ChatWindowProps) {
     const [loading, setLoading] = useState(true);
     const [inputValue, setInputValue] = useState('');
     const [sending, setSending] = useState(false);
+    const { toast } = useToast();
+
+    // Renaming
+    const [isEditingName, setIsEditingName] = useState(false);
+    const [editNameValue, setEditNameValue] = useState('');
+    const [isRenaming, setIsRenaming] = useState(false);
 
     // Mentions
     const [showMentions, setShowMentions] = useState(false);
@@ -41,7 +49,8 @@ export function ChatWindow({ channel, onBack }: ChatWindowProps) {
 
     // Parse direct channel name
     const channelName = useMemo(() => {
-        if (channel.type === 'group') return channel.name || 'Groupe (sans nom)';
+        if (channel.name) return channel.name;
+        if (channel.type === 'group') return 'Groupe (sans nom)';
         // Direct -> find the other member
         const otherUserId = channel.members.find(m => m.user_id !== user?.id)?.user_id;
         if (!otherUserId) return 'Utilisateur inconnu';
@@ -252,6 +261,29 @@ export function ChatWindow({ channel, onBack }: ChatWindowProps) {
         }
     };
 
+    const handleRename = async () => {
+        const trimmedNewName = editNameValue.trim();
+        if (!trimmedNewName || trimmedNewName === channelName) {
+            setIsEditingName(false);
+            return;
+        }
+
+        setIsRenaming(true);
+        try {
+            await chatService.renameChannel(channel.id, trimmedNewName);
+            // Update local channel object or rely on realtime updates?
+            // Realtime for channels is usually subscribed in Messages.tsx.
+            // But we can optimistically update our local channel obj locally or rely on prop change.
+            channel.name = trimmedNewName;
+            setIsEditingName(false);
+            toast({ title: 'Conversation renommée avec succès !' });
+        } catch (err: any) {
+            toast({ title: 'Erreur', description: "Impossible de renommer la conversation", variant: "destructive" });
+        } finally {
+            setIsRenaming(false);
+        }
+    };
+
     const formatMessageTime = (dateStr: string) => {
         const d = new Date(dateStr);
         return format(d, 'HH:mm');
@@ -284,9 +316,9 @@ export function ChatWindow({ channel, onBack }: ChatWindowProps) {
     }, [messages]);
 
     return (
-        <div className="flex flex-col h-full relative" style={{ backgroundColor: '#F0F2F5' }}>
+        <div className="flex flex-col h-full relative" style={{ backgroundColor: 'var(--background)' }}>
             {/* Header */}
-            <div className="h-16 border-b border-border/40 flex items-center px-4 z-10 sticky top-0 bg-[#F0F2F5]">
+            <div className="h-16 border-b border-border/40 flex items-center px-4 z-10 sticky top-0 bg-muted/10">
                 {onBack && (
                     <button onClick={onBack} className="mr-3 p-2 rounded-full hover:bg-black/5 transition-colors text-muted-foreground">
                         <ArrowLeft className="w-5 h-5" />
@@ -301,9 +333,46 @@ export function ChatWindow({ channel, onBack }: ChatWindowProps) {
                         </AvatarFallback>
                     )}
                 </Avatar>
-                <div className="ml-3 flex-1 min-w-0">
-                    <h3 className="font-semibold text-[15px] text-foreground truncate">{channelName}</h3>
-                    <p className="text-xs text-muted-foreground truncate">
+                <div className="ml-3 flex-1 min-w-0 pr-2">
+                    {isEditingName ? (
+                        <div className="flex items-center gap-2">
+                            <input
+                                autoFocus
+                                type="text"
+                                value={editNameValue}
+                                onChange={(e) => setEditNameValue(e.target.value)}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter') handleRename();
+                                    if (e.key === 'Escape') setIsEditingName(false);
+                                }}
+                                disabled={isRenaming}
+                                className="flex-1 text-sm font-semibold rounded-md border border-border/50 px-2 py-1 focus:outline-none focus:ring-2 focus:ring-primary/20 bg-white"
+                            />
+                            <button
+                                onClick={handleRename}
+                                disabled={isRenaming}
+                                className="p-1.5 rounded-md hover:bg-emerald-100 text-emerald-600 transition-colors"
+                            >
+                                {isRenaming ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />}
+                            </button>
+                            <button
+                                onClick={() => setIsEditingName(false)}
+                                disabled={isRenaming}
+                                className="p-1.5 rounded-md hover:bg-red-100 text-red-500 transition-colors"
+                            >
+                                <X className="w-4 h-4" />
+                            </button>
+                        </div>
+                    ) : (
+                        <div className="flex items-center gap-2 group cursor-pointer" onClick={() => {
+                            setEditNameValue(channelName);
+                            setIsEditingName(true);
+                        }}>
+                            <h3 className="font-semibold text-[15px] text-foreground truncate">{channelName}</h3>
+                            <Pencil className="w-3.5 h-3.5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+                        </div>
+                    )}
+                    <p className="text-xs text-muted-foreground truncate leading-none mt-0.5">
                         {channel.type === 'group' ? `${channel.members.length} membres` : 'Direct message'}
                     </p>
                 </div>
@@ -392,7 +461,7 @@ export function ChatWindow({ channel, onBack }: ChatWindowProps) {
 
                 {typingUserIds.length > 0 && (
                     <div className="flex items-center gap-2 mb-4 px-4 text-muted-foreground animate-in fade-in slide-in-from-bottom-2 duration-300">
-                        <div className="bg-white px-3 py-2 rounded-2xl rounded-tl-sm shadow-sm flex items-center gap-1.5 w-fit border border-border/10">
+                        <div className="bg-card px-3 py-2 rounded-2xl rounded-tl-sm shadow-sm flex items-center gap-1.5 w-fit border border-border/10">
                             <span className="w-1.5 h-1.5 bg-zinc-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></span>
                             <span className="w-1.5 h-1.5 bg-zinc-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></span>
                             <span className="w-1.5 h-1.5 bg-zinc-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></span>
@@ -409,7 +478,7 @@ export function ChatWindow({ channel, onBack }: ChatWindowProps) {
             </div>
 
             {/* Input Area */}
-            <div className="p-3 bg-[#F0F2F5] relative">
+            <div className="p-3 bg-muted/10 relative">
                 {/* Mentions Dropdown */}
                 {showMentions && mentionableMembers.length > 0 && (
                     <div className="absolute bottom-full left-3 w-64 bg-card border border-border shadow-xl rounded-xl mb-2 overflow-hidden z-20">
@@ -442,7 +511,7 @@ export function ChatWindow({ channel, onBack }: ChatWindowProps) {
                     </div>
                 )}
 
-                <div className="flex items-center gap-1 bg-white rounded-3xl p-1 focus-within:ring-2 focus-within:ring-emerald-500/20 shadow-sm transition-all border border-border/10">
+                <div className="flex items-center gap-1 bg-card rounded-3xl p-1 focus-within:ring-2 focus-within:ring-emerald-500/20 shadow-sm transition-all border border-border/10">
                     <button
                         type="button"
                         className="w-10 h-10 flex items-center justify-center rounded-full text-zinc-400 hover:text-zinc-600 hover:bg-zinc-100 transition-colors flex-shrink-0"

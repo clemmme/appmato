@@ -3,7 +3,6 @@ import React, { memo } from 'react';
 import { Pencil, Trash2, Eye, Mail, Phone, Play, Clock, UserPlus } from 'lucide-react';
 import { FavoriteStar } from '@/components/ui/favorite-star';
 import { cn } from '@/lib/utils';
-import type { Client } from '@/lib/database.types';
 
 export const ClientCard = memo(({
     client,
@@ -16,8 +15,7 @@ export const ClientCard = memo(({
     timerState,
     startTimer,
     getRegimeLabel,
-    getTotalFee,
-    userRole
+    getTotalFee
 }: any) => {
     return (
         <div

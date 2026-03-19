@@ -1,10 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Clock, Calendar, Coffee, Save, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Checkbox } from '@/components/ui/checkbox';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -39,11 +38,7 @@ export function WorkScheduleSettings() {
     work_days: ['lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi'],
   });
 
-  useEffect(() => {
-    if (user) fetchSchedule();
-  }, [user]);
-
-  const fetchSchedule = async () => {
+  const fetchSchedule = useCallback(async () => {
     try {
       const { data, error } = await (supabase as any)
         .from('profiles')
@@ -66,7 +61,11 @@ export function WorkScheduleSettings() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user]);
+
+  useEffect(() => {
+    if (user) fetchSchedule();
+  }, [user, fetchSchedule]);
 
   const handleSave = async () => {
     if (!user) return;

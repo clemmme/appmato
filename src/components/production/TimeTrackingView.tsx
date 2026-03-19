@@ -7,7 +7,6 @@ import {
   ChevronRight,
   Plus,
   X,
-  Clock,
   Briefcase,
   Coffee,
   Calendar,
