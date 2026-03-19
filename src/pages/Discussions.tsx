@@ -67,14 +67,43 @@ export default function Discussions() {
     useEffect(() => {
         if (user?.id) {
             const fetchProfile = async () => {
-                const { data } = await supabase.from('profiles').select('id, avatar_url, full_name').eq('id', user.id).single();
-                if (data) setProfile(data);
+                const { data } = await supabase.from('profiles').select('id, avatar_url, full_name, current_organization_id').eq('id', user.id).single();
+                if (data) {
+                    setProfile(data);
+                    
+                    // Subscribe to real-time posts for this organization
+                    if (data.current_organization_id) {
+                        const sub = pulseService.subscribeToPosts(data.current_organization_id, () => {
+                            loadPostsQuietly();
+                        });
+                        
+                        // POLLING FALLBACK
+                        const pollInterval = setInterval(() => {
+                            loadPostsQuietly();
+                        }, 15000); // 15 seconds for feed is okay
+
+                        return () => {
+                            supabase.removeChannel(sub);
+                            clearInterval(pollInterval);
+                        };
+                    }
+                }
             };
             fetchProfile();
             loadPosts();
             loadMentionableProfiles();
         }
     }, [user?.id]);
+
+    const loadPostsQuietly = async () => {
+        try {
+            const data = await pulseService.getPosts();
+            setPosts(prev => {
+                if (JSON.stringify(prev) !== JSON.stringify(data)) return data;
+                return prev;
+            });
+        } catch (err) { /* ignore */ }
+    };
 
     const renderContentWithMentions = (content: string) => {
         if (!content) return null;

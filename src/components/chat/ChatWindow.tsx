@@ -127,15 +127,43 @@ export function ChatWindow({ channel, onBack }: ChatWindowProps) {
         ).subscribe((status) => {
             setRealtimeStatus(status as any);
             if (status === 'CHANNEL_ERROR') {
-                console.error("Erreur Realtime: WebSockets bloqués ou Proxy Vercel incompatible.");
+                console.error("Erreur Realtime: WebSockets bloqués ou Proxy Vercel incompatible. Activation du POLLING.");
             }
         });
 
+        // POLLING FALLBACK (if WS is broken)
+        let pollInterval: NodeJS.Timeout | null = null;
+        if (realtimeStatus === 'CHANNEL_ERROR') {
+            pollInterval = setInterval(() => {
+                console.log("Polling for new messages...");
+                loadMessagesQuietly();
+            }, 3000); // 3 seconds
+        }
 
         return () => {
             supabase.removeChannel(subscription);
+            if (pollInterval) clearInterval(pollInterval);
         };
-    }, [channel.id]);
+    }, [channel.id, realtimeStatus]);
+
+    const loadMessagesQuietly = async () => {
+        try {
+            const msgs = await chatService.getMessages(channel.id);
+            setMessages(prev => {
+                // Only update if count changed or last message is different
+                if (msgs.length > 0 && (prev.length !== msgs.length || prev[prev.length - 1]?.id !== msgs[msgs.length - 1]?.id)) {
+                    // If last message is from someone else, play sound
+                    const lastMsg = msgs[msgs.length - 1];
+                    if (lastMsg.sender_id !== user?.id && (!prev.length || prev[prev.length - 1].id !== lastMsg.id)) {
+                        playNotificationSound();
+                    }
+                    setTimeout(scrollToBottom, 100);
+                    return msgs;
+                }
+                return prev;
+            });
+        } catch (err) { /* ignore quiet errors */ }
+    };
 
     const loadMessages = async () => {
         setLoading(true);

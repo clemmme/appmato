@@ -270,5 +270,46 @@ export const pulseService = {
             .getPublicUrl(filePath);
 
         return publicUrl;
+    },
+    /**
+     * Supprimer un commentaire
+     */
+    async deleteComment(commentId: string) {
+        const { error } = await supabase
+            .from('pulse_comments')
+            .delete()
+            .eq('id', commentId);
+
+        if (error) throw error;
+    },
+
+    /**
+     * Écoute en temps réel des publications
+     */
+    subscribeToPosts(orgId: string, onUpdate: () => void) {
+        return supabase
+            .channel(`pulse_posts_${orgId}`)
+            .on('postgres_changes', {
+                event: '*',
+                schema: 'public',
+                table: 'pulse_posts',
+                filter: `organization_id=eq.${orgId}`
+            }, () => onUpdate())
+            .subscribe();
+    },
+
+    /**
+     * Écoute en temps réel des commentaires
+     */
+    subscribeToComments(postId: string, onUpdate: () => void) {
+        return supabase
+            .channel(`pulse_comments_${postId}`)
+            .on('postgres_changes', {
+                event: '*',
+                schema: 'public',
+                table: 'pulse_comments',
+                filter: `post_id=eq.${postId}`
+            }, () => onUpdate())
+            .subscribe();
     }
 };

@@ -33,11 +33,30 @@ export function Messages() {
             const sub = chatService.subscribeToChannels(currentOrg.id, () => {
                 loadChannels();
             });
+
+            // POLLING FALLBACK for channel list (unread badges)
+            const pollInterval = setInterval(() => {
+                loadChannelsQuietly();
+            }, 10000); // 10 seconds for the list is enough
+
             return () => {
                 supabase.removeChannel(sub);
+                clearInterval(pollInterval);
             };
         }
     }, [user, currentOrg]);
+
+    const loadChannelsQuietly = async () => {
+        if (!currentOrg) return;
+        try {
+            const data = await chatService.getChannels(currentOrg.id);
+            setChannels(prev => {
+                // simple check to avoid unnecessary state updates
+                if (JSON.stringify(prev) !== JSON.stringify(data)) return data as any;
+                return prev;
+            });
+        } catch (err) { /* ignore */ }
+    };
 
     const loadChannels = async () => {
         if (!currentOrg) return;
