@@ -78,7 +78,7 @@ function getMotivationalQuote(): string {
 
 const LAUNCHPAD_MODULES = [
   { label: 'Suivi des Dossiers', icon: ClipboardList, path: '/production/suivi-dossiers', color: 'from-blue-500/20 to-transparent', iconColor: 'text-blue-500', desc: "Avancement global" },
-  { label: 'Pilotage TVA', icon: Calculator, path: '/production/tva', color: 'from-emerald-500/20 to-transparent', iconColor: 'text-emerald-500', desc: "Suivi des déclarations" },
+  { label: 'Pilotage TVA', icon: Calculator, path: '/production/ctrl', color: 'from-emerald-500/20 to-transparent', iconColor: 'text-emerald-500', desc: "Suivi des déclarations" },
   { label: 'Révision', icon: FileCheck, path: '/production/revision', color: 'from-amber-500/20 to-transparent', iconColor: 'text-amber-500', desc: "Cycles de révision" },
   { label: 'Supervision', icon: Eye, path: '/production/supervision', color: 'from-purple-500/20 to-transparent', iconColor: 'text-purple-500', desc: "Contrôle qualité" },
   { label: 'Saisie Temps', icon: Clock, path: '/production/temps', color: 'from-pink-500/20 to-transparent', iconColor: 'text-pink-500', desc: "Feuilles de temps" },
@@ -110,7 +110,7 @@ export function CabinetDashboard({
     const result: { type: 'urgent' | 'warning' | 'info'; message: string; action?: string; route?: string }[] = [];
 
     if (kpis.tvaLateCount > 0) {
-      result.push({ type: 'urgent', message: `${kpis.tvaLateCount} déclaration(s) TVA en retard`, action: 'Voir TVA', route: '/production/tva' });
+      result.push({ type: 'urgent', message: `${kpis.tvaLateCount} déclaration(s) TVA en retard`, action: 'Voir TVA', route: '/production/ctrl' });
     }
 
     let supervisionWaiting = 0;

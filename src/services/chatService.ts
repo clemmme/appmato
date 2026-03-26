@@ -299,7 +299,12 @@ export const chatService = {
     /**
      * Écoute des nouveaux messages et des événements de frappe via Supabase Realtime
      */
-    subscribeToMessages(channelId: string, onNewMessage: (msg: any) => void, onTyping?: (userId: string) => void) {
+    /**
+     * Prépare un channel Realtime pour écouter les messages.
+     * IMPORTANT : le channel retourné n'est PAS encore souscrit.
+     * L'appelant DOIT appeler .subscribe() sur le retour.
+     */
+    prepareMessageSubscription(channelId: string, onNewMessage: (msg: any) => void, onTyping?: (userId: string) => void) {
         const channel = supabase.channel(`chat_messages_${channelId}`);
 
         channel.on('postgres_changes', {
@@ -308,8 +313,6 @@ export const chatService = {
             table: 'chat_messages',
             filter: `channel_id=eq.${channelId}`
         }, (payload) => {
-            // Call onNewMessage immediately with raw payload
-            // Profile resolution should happen in the UI to avoid latency
             onNewMessage(payload.new);
         });
 
@@ -321,14 +324,7 @@ export const chatService = {
             });
         }
 
-        const sub = channel.subscribe((status) => {
-            console.log(`Realtime Message Subscription [${channelId}]:`, status);
-            if (status === 'CHANNEL_ERROR') {
-                console.error("Erreur de connexion Realtime (WebSockets bloqués ?)");
-            }
-        });
-
-        return sub;
+        return channel;
     },
 
     /**

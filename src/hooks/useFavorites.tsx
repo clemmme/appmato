@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect, useCallback } from 'react';
-import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
+
+const FAVORITES_KEY = 'appmato_favorite_clients';
 
 export function useFavorites() {
   const { user } = useAuth();
@@ -9,48 +10,37 @@ export function useFavorites() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (user) loadFavorites();
-    else { setFavoriteIds(new Set()); setLoading(false); }
-  }, [user]);
-
-  const loadFavorites = async () => {
-    try {
-      const { data } = await (supabase as any).from('favorite_clients').select('client_id');
-      setFavoriteIds(new Set((data || []).map((d: any) => d.client_id)));
-    } catch {
-      // silent
-    } finally {
-      setLoading(false);
+    if (user) {
+      try {
+        const stored = localStorage.getItem(`${FAVORITES_KEY}_${user.id}`);
+        if (stored) {
+          setFavoriteIds(new Set(JSON.parse(stored)));
+        }
+      } catch {
+        // ignore
+      }
+    } else {
+      setFavoriteIds(new Set());
     }
-  };
+    setLoading(false);
+  }, [user]);
 
   const toggleFavorite = useCallback(async (clientId: string) => {
     if (!user) return;
     const isFav = favoriteIds.has(clientId);
     
-    // Optimistic update
     setFavoriteIds(prev => {
       const next = new Set(prev);
       if (isFav) next.delete(clientId);
       else next.add(clientId);
+      
+      // Save to localStorage
+      try {
+        localStorage.setItem(`${FAVORITES_KEY}_${user.id}`, JSON.stringify(Array.from(next)));
+      } catch { /* ignore */ }
+      
       return next;
     });
-
-    try {
-      if (isFav) {
-        await (supabase as any).from('favorite_clients').delete().eq('user_id', user.id).eq('client_id', clientId);
-      } else {
-        await (supabase as any).from('favorite_clients').insert({ user_id: user.id, client_id: clientId });
-      }
-    } catch {
-      // Revert on error
-      setFavoriteIds(prev => {
-        const next = new Set(prev);
-        if (isFav) next.add(clientId);
-        else next.delete(clientId);
-        return next;
-      });
-    }
   }, [user, favoriteIds]);
 
   const isFavorite = useCallback((clientId: string) => favoriteIds.has(clientId), [favoriteIds]);

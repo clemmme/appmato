@@ -83,8 +83,8 @@ export function ChatWindow({ channel, onBack }: ChatWindowProps) {
         // Mark as read when opening
         chatService.markAsRead(channel.id);
 
-        // Subscribe to new messages
-        const subscription = chatService.subscribeToMessages(
+        // Prepare realtime subscription (single .subscribe() call)
+        const channel_rt = chatService.prepareMessageSubscription(
             channel.id,
             (newMsg) => {
                 setMessages(prev => {
@@ -124,27 +124,24 @@ export function ChatWindow({ channel, onBack }: ChatWindowProps) {
                     delete typingTimeouts.current[userId];
                 }, 3000);
             }
-        ).subscribe((status) => {
+        );
+
+        // Single subscribe call — update status indicator
+        channel_rt.subscribe((status) => {
             setRealtimeStatus(status as any);
-            if (status === 'CHANNEL_ERROR') {
-                console.error("Erreur Realtime: WebSockets bloqués ou Proxy Vercel incompatible. Activation du POLLING.");
-            }
         });
 
-        // POLLING FALLBACK (if WS is broken)
-        let pollInterval: NodeJS.Timeout | null = null;
-        if (realtimeStatus === 'CHANNEL_ERROR') {
-            pollInterval = setInterval(() => {
-                console.log("Polling for new messages...");
-                loadMessagesQuietly();
-            }, 3000); // 3 seconds
-        }
+        // POLLING FALLBACK — always active for reliability (every 5s)
+        // This guarantees messages appear even if WebSocket is broken
+        const pollInterval = setInterval(() => {
+            loadMessagesQuietly();
+        }, 5000);
 
         return () => {
-            supabase.removeChannel(subscription);
-            if (pollInterval) clearInterval(pollInterval);
+            supabase.removeChannel(channel_rt);
+            clearInterval(pollInterval);
         };
-    }, [channel.id, realtimeStatus]);
+    }, [channel.id]);
 
     const loadMessagesQuietly = async () => {
         try {
@@ -290,11 +287,20 @@ export function ChatWindow({ channel, onBack }: ChatWindowProps) {
                 if (trimmed.includes(tag)) extractedMentions.push(m.user_id);
             });
 
-            await chatService.sendMessage(channel.id, trimmed, extractedMentions);
+            const sentMsg = await chatService.sendMessage(channel.id, trimmed, extractedMentions);
+
+            // Optimistic update: add message to local state immediately
+            // The realtime subscription will deduplicate by ID
+            if (sentMsg) {
+                setMessages(prev => {
+                    if (prev.find(m => m.id === sentMsg.id)) return prev;
+                    return [...prev, sentMsg as unknown as ChatMessage];
+                });
+                setTimeout(scrollToBottom, 100);
+            }
+
             setInputValue('');
             setShowMentions(false);
-
-            // Local optimistic ui is handled by realtime subscription receiving its own insert
         } catch (err) {
             console.error("Error sending message", err);
         } finally {

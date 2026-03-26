@@ -3,7 +3,7 @@ import { MainLayout } from '@/components/layout/MainLayout';
 import { cn } from '@/lib/utils';
 import {
     Calculator, BookMarked, Landmark, Percent, Euro, Car, Wrench,
-    Building2, CreditCard, Globe, TrendingUp, ChevronLeft, ArrowRight
+    Building2, CreditCard, Globe, TrendingUp, ChevronLeft, ArrowRight, Scale
 } from 'lucide-react';
 import { AdvancedCalculator } from '@/components/tools/AdvancedCalculator';
 import { PlanComptable } from '@/components/tools/PlanComptable';
@@ -16,6 +16,8 @@ import { EntrepriseSearch } from '@/components/tools/EntrepriseSearch';
 import { VATChecker } from '@/components/tools/VATChecker';
 import { IBANChecker } from '@/components/tools/IBANChecker';
 import { ExchangeRates } from '@/components/tools/ExchangeRates';
+import { TNSWizardProvider } from '@/contexts/TNSWizardContext';
+import { TNSWizard } from '@/components/tns/TNSWizard';
 
 const TOOLS = [
     { id: 'calc', label: 'Calculatrice', icon: Calculator, description: 'Calculatrice experte avec historique', color: 'from-blue-500/20 to-transparent', iconColor: 'text-blue-500' },
@@ -29,6 +31,7 @@ const TOOLS = [
     { id: 'vat', label: 'TVA Intra', icon: Globe, description: 'Vérification VIES européen', color: 'from-violet-500/20 to-transparent', iconColor: 'text-violet-500' },
     { id: 'iban', label: 'IBAN', icon: CreditCard, description: 'Validation IBAN ISO 13616', color: 'from-slate-500/20 to-transparent', iconColor: 'text-slate-500' },
     { id: 'exchange', label: 'Devises', icon: TrendingUp, description: 'Taux de change EUR temps réel', color: 'from-fuchsia-500/20 to-transparent', iconColor: 'text-fuchsia-500' },
+    { id: 'tns', label: 'Régul. TNS', icon: Scale, description: 'Régularisation charges sociales TNS', color: 'from-cyan-500/20 to-transparent', iconColor: 'text-cyan-500' },
 ];
 
 export default function OutilsComptables() {
@@ -58,6 +61,8 @@ export default function OutilsComptables() {
                 return <div className="h-full flex flex-col"><IBANChecker /></div>;
             case 'exchange':
                 return <div className="h-full flex flex-col"><ExchangeRates /></div>;
+            case 'tns':
+                return <div className="h-full flex flex-col"><TNSWizardProvider><TNSWizard /></TNSWizardProvider></div>;
             default:
                 return null;
         }

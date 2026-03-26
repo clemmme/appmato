@@ -479,7 +479,7 @@ export default function Landing() {
       <footer className="border-t border-border bg-muted/30 py-12 px-6">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
           <AppLogo size="sm" showSubtext={false} />
-          <p className="text-muted-foreground text-sm">© 2024 APPMATO. Tous droits réservés.</p>
+          <p className="text-muted-foreground text-sm">© 2025 APPMATO. Tous droits réservés.</p>
         </div>
       </footer>
     </div>

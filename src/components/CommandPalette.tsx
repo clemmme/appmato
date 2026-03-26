@@ -35,7 +35,7 @@ import { useFavorites } from '@/hooks/useFavorites';
 const pages = [
   { label: 'Pilotage Cabinet', path: '/dashboard', icon: LayoutDashboard, keywords: 'dashboard accueil home' },
   { label: 'Suivi des Dossiers', path: '/production/suivi-dossiers', icon: ClipboardList, keywords: 'suivi production kpi' },
-  { label: 'Pilotage TVA', path: '/production/tva', icon: Calculator, keywords: 'tva déclaration' },
+  { label: 'Pilotage TVA', path: '/production/ctrl', icon: Calculator, keywords: 'tva déclaration' },
   { label: 'Révision', path: '/production/revision', icon: FileCheck, keywords: 'bilan révision cycles' },
   { label: 'Supervision', path: '/production/supervision', icon: Eye, keywords: 'supervision chef validation' },
   { label: 'Clôture Annuelle', path: '/production/cloture', icon: Archive, keywords: 'clôture annuelle liasse' },

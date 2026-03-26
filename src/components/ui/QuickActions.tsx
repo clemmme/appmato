@@ -7,7 +7,7 @@ import {
 import { cn } from '@/lib/utils';
 
 const actions = [
-  { icon: Calculator, label: 'Pilotage TVA', path: '/production/tva', color: 'bg-primary text-primary-foreground' },
+  { icon: Calculator, label: 'Pilotage TVA', path: '/production/ctrl', color: 'bg-primary text-primary-foreground' },
   { icon: FileCheck, label: 'Révision', path: '/production/revision', color: 'bg-emerald-500 text-white' },
   { icon: Scale, label: 'Calcul TVA', path: '/production/ctrl', color: 'bg-violet-500 text-white' },
   { icon: Clock, label: 'Calendrier', path: '/production/temps', color: 'bg-sky-500 text-white' },

@@ -18,7 +18,7 @@ import { WorkspaceSwitcher } from './WorkspaceSwitcher';
 import { useWorkspace } from '@/contexts/WorkspaceContext';
 import { NotificationBell } from '../notifications/NotificationBell';
 
-type ViewType = 'dashboard' | 'suivi-dossiers' | 'tva' | 'revision' | 'supervision' | 'cloture' | 'ctrl' | 'temps' | 'clients' | 'settings' | 'outils' | 'news' | 'annuaire' | 'assistant' | 'integrations' | 'discussions' | 'messages';
+type ViewType = 'dashboard' | 'suivi-dossiers' | 'tva' | 'revision' | 'supervision' | 'cloture' | 'ctrl' | 'temps' | 'clients' | 'settings' | 'outils' | 'news' | 'annuaire' | 'assistant' | 'integrations' | 'discussions' | 'messages' | 'aide';
 
 const categories = [
   {
@@ -53,6 +53,8 @@ const categories = [
     workspace: "gestion",
     items: [
       { id: 'outils' as ViewType, label: 'Outils Comptables', icon: Wrench, path: '/outils' },
+      { id: 'integrations' as ViewType, label: 'Intégrations', icon: Link2, path: '/integrations' },
+      { id: 'aide' as ViewType, label: 'Aide & Support', icon: HelpCircle, path: '/aide' },
     ]
   },
   {

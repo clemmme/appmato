@@ -65,34 +65,38 @@ export default function Discussions() {
     const commentInputRefs = useRef<Record<string, HTMLInputElement>>({});
 
     useEffect(() => {
-        if (user?.id) {
-            const fetchProfile = async () => {
-                const { data } = await supabase.from('profiles').select('id, avatar_url, full_name, current_organization_id').eq('id', user.id).single();
-                if (data) {
-                    setProfile(data);
-                    
-                    // Subscribe to real-time posts for this organization
-                    if (data.current_organization_id) {
-                        const sub = pulseService.subscribeToPosts(data.current_organization_id, () => {
-                            loadPostsQuietly();
-                        });
-                        
-                        // POLLING FALLBACK
-                        const pollInterval = setInterval(() => {
-                            loadPostsQuietly();
-                        }, 15000); // 15 seconds for feed is okay
+        if (!user?.id) return;
 
-                        return () => {
-                            supabase.removeChannel(sub);
-                            clearInterval(pollInterval);
-                        };
-                    }
+        let sub: ReturnType<typeof pulseService.subscribeToPosts> | null = null;
+        let pollInterval: NodeJS.Timeout | null = null;
+
+        const init = async () => {
+            const { data } = await supabase.from('profiles').select('id, avatar_url, full_name, current_organization_id').eq('id', user.id).single();
+            if (data) {
+                setProfile(data);
+                
+                // Subscribe to real-time posts for this organization
+                if (data.current_organization_id) {
+                    sub = pulseService.subscribeToPosts(data.current_organization_id, () => {
+                        loadPostsQuietly();
+                    });
+                    
+                    // POLLING FALLBACK
+                    pollInterval = setInterval(() => {
+                        loadPostsQuietly();
+                    }, 15000);
                 }
-            };
-            fetchProfile();
-            loadPosts();
-            loadMentionableProfiles();
-        }
+            }
+        };
+
+        init();
+        loadPosts();
+        loadMentionableProfiles();
+
+        return () => {
+            if (sub) supabase.removeChannel(sub);
+            if (pollInterval) clearInterval(pollInterval);
+        };
     }, [user?.id]);
 
     const loadPostsQuietly = async () => {

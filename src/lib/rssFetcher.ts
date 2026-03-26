@@ -1,6 +1,6 @@
 const CORS_PROXIES = [
     'https://api.allorigins.win/raw?url=',
-    'https://corsproxy.io/?',
+    'https://corsproxy.io/?'
 ];
 
 export interface RSSItem {
@@ -93,6 +93,12 @@ const FALLBACK_ARTICLES: RSSItem[] = [
     },
 ];
 
+function decodeHtmlEntities(str: string): string {
+    const textarea = document.createElement('textarea');
+    textarea.innerHTML = str;
+    return textarea.value;
+}
+
 function parseRSSXml(xmlString: string, source: FeedSource): RSSItem[] {
     try {
         const parser = new DOMParser();
@@ -107,15 +113,27 @@ function parseRSSXml(xmlString: string, source: FeedSource): RSSItem[] {
 
         items.forEach((item) => {
             const title = item.querySelector('title')?.textContent?.trim() ?? '';
-            let link = item.querySelector('link')?.textContent?.trim() || item.querySelector('link')?.getAttribute('href')?.trim() || '#';
+            let link = item.querySelector('link')?.textContent?.trim() || item.querySelector('link')?.getAttribute('href')?.trim() || '';
             const description = item.querySelector('description')?.textContent?.trim() ?? '';
             const pubDateStr = item.querySelector('pubDate')?.textContent?.trim();
             const categoryEl = item.querySelector('category')?.textContent?.trim();
 
+            // Decode HTML entities in the link (RSS feeds often encode & as &amp; etc.)
+            if (link) {
+                link = decodeHtmlEntities(link);
+            }
+
             // Handle relative links
-            if (link.startsWith('/')) {
-                const baseUrl = new URL(source.url).origin;
-                link = baseUrl + link;
+            if (link && link.startsWith('/')) {
+                try {
+                    const baseUrl = new URL(source.url).origin;
+                    link = baseUrl + link;
+                } catch { /* leave as-is */ }
+            }
+
+            // Skip items without a valid link
+            if (!link || link === '#') {
+                link = source.url; // Fallback to the source URL
             }
 
             const cleanDescription = description.replace(/<[^>]*>/g, '').substring(0, 250);
